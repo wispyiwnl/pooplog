@@ -1,0 +1,13 @@
+# Variables de entorno y configuración sensible
+.env
+.env.local
+.env.production
+config.js
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/

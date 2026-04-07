@@ -1,0 +1,16 @@
+[build]
+  command = "echo \"window.POOPLOG_CONFIG = { SUPABASE_URL: '${SUPABASE_URL}', SUPABASE_KEY: '${SUPABASE_KEY}' };\" > config.js"
+  publish = "."
+
+[[headers]]
+  for = "/config.js"
+  [headers.values]
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"

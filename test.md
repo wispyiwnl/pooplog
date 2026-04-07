@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8"/>
@@ -7,7 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -377,11 +376,9 @@
 <div class="toast" id="toast"></div>
 
 <script>
-
-
-// Inicialización segura — keys vienen de config.js (no está en GitHub)
-  const { SUPABASE_URL, SUPABASE_KEY } = window.POOPLOG_CONFIG;
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL = 'https://jhedbrqslvmxydskycys.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_1XkGGjK5fgj5RwRVZeZSKg_uNGlD0nD';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const typeNames = {'1':'Tipo 1 — Bolitas','2':'Tipo 2 — Grumoso','3':'Tipo 3 — Con grietas','4':'Tipo 4 — Ideal','5':'Tipo 5 — Trozos','6':'Tipo 6 — Esponjoso','7':'Tipo 7 — Líquido'};
 const effortLabels = {smooth:'Solo', bit:'Poco esfuerzo', hard:'Con esfuerzo', brutal:'Una lucha'};
@@ -687,4 +684,4 @@ sb.auth.onAuthStateChange(async (event, session) => {
 });
 </script>
 </body>
-</html>
+</html> -->
