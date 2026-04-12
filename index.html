@@ -4,6 +4,9 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>💩 PoopLog</title>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="apple-touch-icon" href="favicon.png"/>
+  <meta name="theme-color" content="#1D9E75"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -76,6 +79,9 @@
     .app-root { max-width: 480px; margin: 0 auto; padding: 1.5rem 1rem 5rem; }
     .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
     .app-title { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; }
+    .inactivity-banner { display:none; align-items:center; gap:10px; background:#E1F5EE; border:0.5px solid #1D9E75; border-radius:var(--radius-md); padding:10px 14px; margin-bottom:1rem; }
+    .inactivity-banner.show { display:flex; }
+    .inactivity-close { background:none; border:none; cursor:pointer; color:#085041; font-size:16px; margin-left:auto; padding:0 2px; line-height:1; flex-shrink:0; }
     .user-chip { display: flex; align-items: center; gap: 8px; background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: 20px; padding: 6px 12px 6px 6px; cursor: pointer; transition: background 0.15s; }
     .user-chip:hover { background: var(--bg-secondary); }
     .avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--green-dark); flex-shrink: 0; }
@@ -393,6 +399,12 @@
     </div>
 
     <!-- GUEST BANNER -->
+    <div id="inactivity-banner" class="inactivity-banner">
+      <span style="font-size:20px">&#128169;</span>
+      <div style="flex:1;font-size:13px;color:#085041;line-height:1.4"><strong style="font-weight:600">Llevas más de 2 días sin registrar.</strong> ¿Cómo ha estado el popo?</div>
+      <button class="inactivity-close" onclick="dismissInactivityBanner()">&#x2715;</button>
+    </div>
+
     <div id="guest-banner" style="display:none;background:#FAEEDA;border-radius:var(--radius-md);padding:10px 14px;margin-bottom:1rem;display:none;align-items:center;gap:10px;border:0.5px solid #BA7517;">
       <span style="font-size:16px">👤</span>
       <div style="flex:1;font-size:13px;color:#633806;">Estás como invitado. Los datos solo se guardan aquí.</div>
@@ -911,6 +923,27 @@ function selectEffort(el) {
   el.classList.add('sel-' + el.dataset.effort);
   selectedEffort = el.dataset.effort;
 }
+function checkInactivity() {
+  const banner = document.getElementById('inactivity-banner');
+  if (!banner) return;
+  const dismissed = localStorage.getItem('inactivity_dismissed');
+  const today = new Date().toDateString();
+  if (dismissed === today) return;
+  if (!logs.length) return;
+  const lastLog = logs.reduce((a, b) => a.time > b.time ? a : b);
+  const daysSince = Math.floor((new Date() - lastLog.time) / 86400000);
+  if (daysSince >= 2) {
+    banner.classList.add('show');
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+function dismissInactivityBanner() {
+  document.getElementById('inactivity-banner').classList.remove('show');
+  localStorage.setItem('inactivity_dismissed', new Date().toDateString());
+}
+
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -957,7 +990,7 @@ function updateUI() {
   document.getElementById('stat-total').textContent = logs.length;
   document.getElementById('stat-week').textContent = logs.filter(l => l.time >= new Date(now - 7*86400000)).length;
   document.getElementById('stat-streak').textContent = new Set(logs.map(l => l.time.toDateString())).size;
-  updateScore(); updateWeeklyBar(); renderList();
+  updateScore(); updateWeeklyBar(); renderList(); checkInactivity();
 }
 
 function toggleScoreExpand() {
