@@ -32,6 +32,12 @@
     body { font-family: 'DM Sans', sans-serif; background: var(--bg-tertiary); color: var(--text-primary); min-height: 100vh; }
     .page { display: none; }
     .page.active { display: block; }
+    .ob-slide { position: absolute; inset: 0; opacity: 0; transform: translateX(40px); transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; }
+    .ob-active { opacity: 1 !important; transform: translateX(0) !important; pointer-events: all !important; }
+    .ob-exit-left { opacity: 0 !important; transform: translateX(-40px) !important; }
+    .ob-exit-right { opacity: 0 !important; transform: translateX(40px) !important; }
+    .ob-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-strong); transition: all 0.3s; }
+    .ob-dot.ob-dot-active { width: 20px; border-radius: 3px; background: #1D9E75; }
 
     /* LOADING */
     .loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 12px; }
@@ -302,6 +308,61 @@
 </div>
 
 <!-- AUTH -->
+<div id="page-onboarding" class="page">
+  <div style="max-width:420px;margin:0 auto;padding:2rem 1rem 4rem;min-height:100vh;display:flex;flex-direction:column;justify-content:center;">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="font-size:32px;margin-bottom:6px">&#128169;</div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;">PoopLog</div>
+    </div>
+    <div style="background:var(--bg-primary);border-radius:var(--radius-lg);border:0.5px solid var(--border);overflow:hidden;">
+      <div style="position:relative;height:320px;" id="ob-slides">
+        <div class="ob-slide ob-active" data-step="0" style="padding:2rem 1.75rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="font-size:48px;margin-bottom:1.25rem;line-height:1">&#128169;</div>
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;line-height:1.2;">Bienvenido a PoopLog</div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:300px;">Tu diario digestivo personal. Lleva un registro de tu salud intestinal de forma simple, privada y sin complicaciones.</div>
+        </div>
+        <div class="ob-slide" data-step="1" style="padding:2rem 1.75rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="font-size:48px;margin-bottom:1.25rem;line-height:1">&#128203;</div>
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;line-height:1.2;">Registra cada popo</div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:300px;">Después de cada visita al baño, registra el tipo, qué tan fácil salió y una nota opcional. Solo toma 10 segundos.</div>
+        </div>
+        <div class="ob-slide" data-step="2" style="padding:2rem 1.75rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="font-size:48px;margin-bottom:1.25rem;line-height:1">&#128200;</div>
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;line-height:1.2;">La escala de Bristol</div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:300px;">Es el estándar médico para clasificar las heces. Elige la ilustración que más se parezca a lo tuyo.</div>
+          <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;justify-content:center;">
+            <span style="font-size:11px;padding:3px 8px;border-radius:10px;font-weight:500;background:#FCEBEB;color:#A32D2D;">Tipo 1-2 — Estreñimiento</span>
+            <span style="font-size:11px;padding:3px 8px;border-radius:10px;font-weight:500;background:#EAF3DE;color:#27500A;">Tipo 3-4 — Ideal</span>
+            <span style="font-size:11px;padding:3px 8px;border-radius:10px;font-weight:500;background:#FAEEDA;color:#633806;">Tipo 5-7 — Diarrea</span>
+          </div>
+        </div>
+        <div class="ob-slide" data-step="3" style="padding:2rem 1.75rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="font-size:48px;margin-bottom:1.25rem;line-height:1">&#128197;</div>
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;line-height:1.2;">Se te olvidó registrar</div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:300px;">Sin problema. Puedes registrar popos pasados eligiendo <span style="background:#E1F5EE;color:#085041;border-radius:6px;padding:1px 6px;font-weight:500;font-size:13px;">hace 1h</span>, <span style="background:#E1F5EE;color:#085041;border-radius:6px;padding:1px 6px;font-weight:500;font-size:13px;">ayer</span> o la fecha exacta.</div>
+        </div>
+        <div class="ob-slide" data-step="4" style="padding:2rem 1.75rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="font-size:48px;margin-bottom:1.25rem;line-height:1">&#128293;</div>
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;line-height:1.2;">Construye tu racha</div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:300px;">Registra todos los días y acumula días consecutivos. A más datos, más útiles son tus insights digestivos.</div>
+        </div>
+        <div class="ob-slide" data-step="5" style="padding:2rem 1.75rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="font-size:48px;margin-bottom:1.25rem;line-height:1">&#127881;</div>
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;line-height:1.2;">Todo listo</div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:300px;">Tus datos son privados y solo los ves tú. Puedes volver a ver esta guía desde el menú de perfil en cualquier momento.</div>
+        </div>
+      </div>
+      <div style="padding:1.25rem 1.75rem;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div style="display:flex;gap:6px;align-items:center;" id="ob-dots"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button id="ob-back" onclick="obBack()" style="display:none;background:var(--bg-secondary);border:0.5px solid var(--border-strong);color:var(--text-primary);border-radius:var(--radius-md);padding:10px 16px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">&#8592; Volver</button>
+          <button id="ob-next" onclick="obNext()" style="background:#1D9E75;color:white;border:none;border-radius:var(--radius-md);padding:10px 20px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Siguiente</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="page-auth" class="page">
   <div class="auth-wrap">
     <div class="logo">
@@ -765,6 +826,78 @@ function showCalDetail(y, m, d) {
 }
 
 // ── PAGES ──
+const OB_TOTAL = 6;
+let obCurrent = 0;
+let obAnimating = false;
+
+function obBuildDots() {
+  const dots = document.getElementById('ob-dots');
+  if (!dots) return;
+  dots.innerHTML = Array.from({length: OB_TOTAL}, (_,i) =>
+    '<div class="ob-dot' + (i===0?' ob-dot-active':'') + '"></div>'
+  ).join('');
+}
+
+function obUpdateUI() {
+  const back = document.getElementById('ob-back');
+  const next = document.getElementById('ob-next');
+  if (!back || !next) return;
+  back.style.display = obCurrent > 0 ? 'inline-block' : 'none';
+  next.textContent = obCurrent === OB_TOTAL - 1 ? '¡Empezar!' : 'Siguiente';
+  document.querySelectorAll('.ob-dot').forEach((d,i) =>
+    d.classList.toggle('ob-dot-active', i === obCurrent)
+  );
+}
+
+function obGoTo(step, dir) {
+  if (obAnimating) return;
+  obAnimating = true;
+  const slides = document.querySelectorAll('.ob-slide');
+  const from = slides[obCurrent];
+  const to = slides[step];
+  const exitCls = dir === 'next' ? 'ob-exit-left' : 'ob-exit-right';
+
+  from.classList.remove('ob-active');
+  from.classList.add(exitCls);
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    to.classList.add('ob-active');
+  }));
+
+  setTimeout(() => {
+    from.classList.remove(exitCls);
+    obAnimating = false;
+  }, 370);
+
+  obCurrent = step;
+  obUpdateUI();
+}
+
+function obNext() {
+  if (obCurrent < OB_TOTAL - 1) {
+    obGoTo(obCurrent + 1, 'next');
+  } else {
+    localStorage.setItem('ob_done', '1');
+    showPage('app');
+  }
+}
+
+function obBack() {
+  if (obCurrent > 0) obGoTo(obCurrent - 1, 'back');
+}
+
+function openHowItWorks() {
+  obCurrent = 0;
+  document.querySelectorAll('.ob-slide').forEach((s,i) => {
+    s.classList.remove('ob-active','ob-exit-left','ob-exit-right');
+    if (i===0) s.classList.add('ob-active');
+  });
+  obUpdateUI();
+  document.getElementById('ob-next').textContent = 'Siguiente';
+  document.getElementById('ob-back').style.display = 'none';
+  showPage('onboarding');
+}
+
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
@@ -845,26 +978,34 @@ function openProfile() {
   streakEl.style.color = parseInt(streakVal) >= 3 ? '#085041' : '';
 
   const actions = document.getElementById('profile-actions');
-  if (currentUser) {
-    actions.innerHTML = `
-      <button class="profile-action-btn danger" onclick="doLogout()">
-        <div class="profile-action-icon">🚪</div>
+  const howItWorksBtn = `
+      <button class="profile-action-btn" onclick="closeProfile();openHowItWorks()">
+        <div class="profile-action-icon">&#128218;</div>
         <div>
-          <div>Cerrar sesión</div>
+          <div>Como funciona</div>
+          <div style="font-size:11px;font-weight:400;opacity:0.7;margin-top:1px">Ver la guia de inicio</div>
+        </div>
+      </button>`;
+  if (currentUser) {
+    actions.innerHTML = howItWorksBtn + `
+      <button class="profile-action-btn danger" onclick="doLogout()">
+        <div class="profile-action-icon">&#128682;</div>
+        <div>
+          <div>Cerrar sesion</div>
           <div style="font-size:11px;font-weight:400;opacity:0.7;margin-top:1px">${currentUser.email}</div>
         </div>
       </button>`;
   } else {
-    actions.innerHTML = `
+    actions.innerHTML = howItWorksBtn + `
       <button class="profile-action-btn" onclick="closeProfile();showPage('auth')">
-        <div class="profile-action-icon">🔑</div>
+        <div class="profile-action-icon">&#128273;</div>
         <div>
-          <div>Crear cuenta o iniciar sesión</div>
+          <div>Crear cuenta o iniciar sesion</div>
           <div style="font-size:11px;font-weight:400;opacity:0.7;margin-top:1px">Guarda tus datos en la nube</div>
         </div>
       </button>
       <button class="profile-action-btn danger" onclick="confirmClearGuest()">
-        <div class="profile-action-icon">🗑️</div>
+        <div class="profile-action-icon">&#128465;</div>
         <div>
           <div>Borrar mis datos</div>
           <div style="font-size:11px;font-weight:400;opacity:0.7;margin-top:1px">Elimina el historial local</div>
@@ -893,12 +1034,18 @@ function closeProfile() {
 
 function enterAsGuest() {
   currentUser = null;
-  showPage('app');
   setupGuestUI();
   initTimeToggle();
   logs = JSON.parse(localStorage.getItem('pooplog_guest') || '[]').map(l => ({...l, time: new Date(l.time)}));
   updateWeeklyBar();
   updateUI();
+  if (!localStorage.getItem('ob_done')) {
+    obBuildDots();
+    obUpdateUI();
+    showPage('onboarding');
+  } else {
+    showPage('app');
+  }
 }
 
 function setupGuestUI() {
@@ -1326,13 +1473,16 @@ sb.auth.onAuthStateChange(async (event, session) => {
     document.getElementById('logout-email-hint') && (document.getElementById('logout-email-hint').textContent = email);
     document.getElementById('guest-banner').style.display = 'none';
 
-    showPage('app');
     initTimeToggle();
     updateWeeklyBar();
     await loadLogs();
-    showPage('app');
-    updateWeeklyBar();
-    await loadLogs();
+    if (!localStorage.getItem('ob_done')) {
+      obBuildDots();
+      obUpdateUI();
+      showPage('onboarding');
+    } else {
+      showPage('app');
+    }
   } else {
     currentUser = null;
     showPage('auth');
