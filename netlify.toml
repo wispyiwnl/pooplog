@@ -1,6 +1,6 @@
 [build]
-  command = "printf 'window.POOPLOG_CONFIG={SUPABASE_URL:\"%s\",SUPABASE_KEY:\"%s\"};' \"$SUPABASE_URL\" \"$SUPABASE_KEY\" > config.js"
-  publish = "."
+  command = "printf 'window.POOPLOG_CONFIG={SUPABASE_URL:\"%s\",SUPABASE_KEY:\"%s\"};' \"$SUPABASE_URL\" \"$SUPABASE_KEY\" > public/config.js"
+  publish = "public"
 
 [build.environment]
   SECRETS_SCAN_OMIT_KEYS = "SUPABASE_KEY,SUPABASE_URL"

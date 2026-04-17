@@ -2,7 +2,7 @@
 .env
 .env.local
 .env.production
-config.js
+public/config.js
 
 # Sistema operativo
 .DS_Store
