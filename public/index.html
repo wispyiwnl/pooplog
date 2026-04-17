@@ -1,393 +1,1882 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>💩 PoopLog</title>
-  <link rel="icon" type="image/png" href="favicon.png"/>
-  <link rel="apple-touch-icon" href="favicon.png"/>
-  <meta name="theme-color" content="#1D9E75"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/styles.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-</head>
-<body>
-
-<!-- LOADING -->
-<div id="page-loading" class="page active">
-  <div class="loading-screen">
-    <div style="font-size:52px">💩</div>
-    <div class="loading-title">PoopLog</div>
-    <div class="spinner" style="margin-top:8px"></div>
-  </div>
-</div>
-
-<!-- AUTH -->
-<div id="page-onboarding" class="page">
-  <div style="max-width:420px;margin:0 auto;padding:2rem 1rem 4rem;min-height:100vh;display:flex;flex-direction:column;justify-content:center;">
-    <div style="text-align:center;margin-bottom:1.5rem;">
-      <div style="font-size:32px;margin-bottom:6px">&#128169;</div>
-      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;">PoopLog</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>💩 PoopLog</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="apple-touch-icon" href="favicon.png" />
+    <meta name="theme-color" content="#1D9E75" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Sans:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+  </head>
+  <body>
+    <!-- LOADING -->
+    <div id="page-loading" class="page active">
+      <div class="loading-screen">
+        <div style="font-size: 52px">💩</div>
+        <div class="loading-title">PoopLog</div>
+        <div class="spinner" style="margin-top: 8px"></div>
+      </div>
     </div>
-    <div style="background:var(--bg-primary);border-radius:var(--radius-lg);border:0.5px solid var(--border);overflow:hidden;">
-      <div style="position:relative;height:320px;" id="ob-slides">
-        <div class="ob-slide ob-active" data-step="0" style="padding:2rem 1.75rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;">
-          <div style="font-size:48px;margin-bottom:1.25rem;line-height:1">&#128169;</div>
-          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;line-height:1.2;">Bienvenido a PoopLog</div>
-          <div style="font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:300px;">Tu diario digestivo personal. Lleva un registro de tu salud intestinal de forma simple, privada y sin complicaciones.</div>
-        </div>
-        <div class="ob-slide" data-step="1" style="padding:2rem 1.75rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;">
-          <div style="font-size:48px;margin-bottom:1.25rem;line-height:1">&#128203;</div>
-          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;line-height:1.2;">Registra cada popo</div>
-          <div style="font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:300px;">Después de cada visita al baño, registra el tipo, qué tan fácil salió y una nota opcional. Solo toma 10 segundos.</div>
-        </div>
-        <div class="ob-slide" data-step="2" style="padding:2rem 1.75rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;">
-          <div style="font-size:48px;margin-bottom:1.25rem;line-height:1">&#128200;</div>
-          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;line-height:1.2;">La escala de Bristol</div>
-          <div style="font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:300px;">Es el estándar médico para clasificar las heces. Elige la ilustración que más se parezca a lo tuyo.</div>
-          <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;justify-content:center;">
-            <span style="font-size:11px;padding:3px 8px;border-radius:10px;font-weight:500;background:#FCEBEB;color:#A32D2D;">Tipo 1-2 — Estreñimiento</span>
-            <span style="font-size:11px;padding:3px 8px;border-radius:10px;font-weight:500;background:#EAF3DE;color:#27500A;">Tipo 3-4 — Ideal</span>
-            <span style="font-size:11px;padding:3px 8px;border-radius:10px;font-weight:500;background:#FAEEDA;color:#633806;">Tipo 5-7 — Diarrea</span>
+
+    <!-- AUTH -->
+    <div id="page-onboarding" class="page">
+      <div
+        style="
+          max-width: 420px;
+          margin: 0 auto;
+          padding: 2rem 1rem 4rem;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        "
+      >
+        <div style="text-align: center; margin-bottom: 1.5rem">
+          <div style="font-size: 32px; margin-bottom: 6px">&#128169;</div>
+          <div
+            style="
+              font-family: &quot;Syne&quot;, sans-serif;
+              font-size: 24px;
+              font-weight: 800;
+            "
+          >
+            PoopLog
           </div>
         </div>
-        <div class="ob-slide" data-step="3" style="padding:2rem 1.75rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;">
-          <div style="font-size:48px;margin-bottom:1.25rem;line-height:1">&#128197;</div>
-          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;line-height:1.2;">Se te olvidó registrar</div>
-          <div style="font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:300px;">Sin problema. Puedes registrar popos pasados eligiendo <span style="background:#E1F5EE;color:#085041;border-radius:6px;padding:1px 6px;font-weight:500;font-size:13px;">hace 1h</span>, <span style="background:#E1F5EE;color:#085041;border-radius:6px;padding:1px 6px;font-weight:500;font-size:13px;">ayer</span> o la fecha exacta.</div>
-        </div>
-        <div class="ob-slide" data-step="4" style="padding:2rem 1.75rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;">
-          <div style="font-size:48px;margin-bottom:1.25rem;line-height:1">&#128293;</div>
-          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;line-height:1.2;">Construye tu racha</div>
-          <div style="font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:300px;">Registra todos los días y acumula días consecutivos. A más datos, más útiles son tus insights digestivos.</div>
-        </div>
-        <div class="ob-slide" data-step="5" style="padding:2rem 1.75rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;">
-          <div style="font-size:48px;margin-bottom:1.25rem;line-height:1">&#127881;</div>
-          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;line-height:1.2;">Todo listo</div>
-          <div style="font-size:14px;color:var(--text-secondary);line-height:1.65;max-width:300px;">Tus datos son privados y solo los ves tú. Puedes volver a ver esta guía desde el menú de perfil en cualquier momento.</div>
-        </div>
-      </div>
-      <div style="padding:1.25rem 1.75rem;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;">
-        <div style="display:flex;gap:6px;align-items:center;" id="ob-dots"></div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <button id="ob-back" onclick="obBack()" style="display:none;background:var(--bg-secondary);border:0.5px solid var(--border-strong);color:var(--text-primary);border-radius:var(--radius-md);padding:10px 16px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">&#8592; Volver</button>
-          <button id="ob-next" onclick="obNext()" style="background:#1D9E75;color:white;border:none;border-radius:var(--radius-md);padding:10px 20px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Siguiente</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="page-auth" class="page">
-  <div class="auth-wrap">
-    <div class="logo">
-      <div class="logo-title">💩 PoopLog</div>
-      <div class="logo-sub">Tu diario digestivo personal</div>
-    </div>
-    <div class="card">
-      <div class="tab-row">
-        <div class="tab active" id="tab-login" onclick="switchTab('login')">Iniciar sesión</div>
-        <div class="tab" id="tab-register" onclick="switchTab('register')">Crear cuenta</div>
-      </div>
-
-      <!-- LOGIN -->
-      <div id="panel-login" class="panel active">
-        <div class="error-msg" id="login-error"></div>
-        <div class="form-group">
-          <label class="form-label">Correo electrónico</label>
-          <input class="form-input" type="email" id="login-email" placeholder="tu@correo.com"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Contraseña</label>
-          <input class="form-input" type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
-        </div>
-        <button class="btn-primary" id="btn-login" onclick="doLogin()">Entrar</button>
-        <div class="divider"><div class="divider-line"></div><div class="divider-text">o continúa con</div><div class="divider-line"></div></div>
-        <button class="btn-google" onclick="doGoogle()">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
-          Continuar con Google
-        </button>
-        <div class="helper-text">¿Olvidaste tu contraseña? <span class="helper-link" onclick="switchPanel('reset')">Recupérala aquí</span></div>
-        <div class="divider"><div class="divider-line"></div><div class="divider-text">o</div><div class="divider-line"></div></div>
-        <button class="btn-guest" onclick="enterAsGuest()">Continuar como invitado</button>
-        <div class="helper-text" style="margin-top:0.75rem">Sin cuenta — los datos solo se guardan en este dispositivo</div>
-      </div>
-
-      <!-- REGISTER -->
-      <div id="panel-register" class="panel">
-        <div class="error-msg" id="register-error"></div>
-        <div class="form-group">
-          <label class="form-label">Correo electrónico</label>
-          <input class="form-input" type="email" id="reg-email" placeholder="tu@correo.com"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Contraseña</label>
-          <input class="form-input" type="password" id="reg-pass" placeholder="Mínimo 8 caracteres"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Confirmar contraseña</label>
-          <input class="form-input" type="password" id="reg-pass2" placeholder="Repite tu contraseña" onkeydown="if(event.key==='Enter')doRegister()"/>
-        </div>
-        <button class="btn-primary" id="btn-register" onclick="doRegister()">Crear cuenta</button>
-        <div class="divider"><div class="divider-line"></div><div class="divider-text">o continúa con</div><div class="divider-line"></div></div>
-        <button class="btn-google" onclick="doGoogle()">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
-          Continuar con Google
-        </button>
-        <div class="privacy-note"><span>🔒</span><span>Tus datos son privados. Nunca compartimos tu información. Los registros solo los ves tú.</span></div>
-      </div>
-
-      <!-- VERIFY -->
-      <div id="panel-verify" class="panel">
-        <div class="verify-screen">
-          <div style="margin:0 auto 1rem;width:56px;height:56px"><svg viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="26" fill="#E1F5EE"/><path d="M12 28 L22 38 L44 18" stroke="#1D9E75" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
-          <div class="verify-title">Revisa tu correo</div>
-          <div class="verify-sub">Enviamos un enlace a<br><span class="email-highlight" id="verify-email-show"></span><br><br>Haz clic en el enlace para activar tu cuenta.</div>
-          <button class="btn-primary" onclick="switchTab('login')">Volver al inicio de sesión</button>
-          <div class="helper-text" style="margin-top:1rem">¿No llegó? Revisa tu carpeta de spam.</div>
-        </div>
-      </div>
-
-      <!-- RESET -->
-      <div id="panel-reset" class="panel">
-        <div style="margin-bottom:1.25rem">
-          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px">Recuperar contraseña</div>
-          <div style="font-size:13px;color:var(--text-secondary);line-height:1.5">Te enviamos un enlace para restablecer tu contraseña.</div>
-        </div>
-        <div class="error-msg" id="reset-error"></div>
-        <div class="form-group">
-          <label class="form-label">Correo electrónico</label>
-          <input class="form-input" type="email" id="reset-email" placeholder="tu@correo.com"/>
-        </div>
-        <button class="btn-primary" onclick="doReset()">Enviar enlace</button>
-        <div class="helper-text" style="margin-top:1rem"><span class="helper-link" onclick="switchTab('login')">← Volver</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- APP -->
-<div id="page-app" class="page">
-  <div class="app-root">
-    <div class="app-header">
-      <div class="app-title">💩 PoopLog</div>
-      <div class="user-chip" onclick="openProfile()">
-        <div class="avatar" id="user-avatar">?</div>
-        <div class="chip-email" id="user-email-display">...</div>
-      </div>
-    </div>
-
-    <!-- GUEST BANNER -->
-    <div id="inactivity-banner" class="inactivity-banner">
-      <span style="font-size:20px">&#128169;</span>
-      <div style="flex:1;font-size:13px;color:#085041;line-height:1.4"><strong style="font-weight:600">Llevas más de 2 días sin registrar.</strong> ¿Cómo ha estado el popo?</div>
-      <button class="inactivity-close" onclick="dismissInactivityBanner()">&#x2715;</button>
-    </div>
-
-    <div id="guest-banner" style="display:none;background:#FAEEDA;border-radius:var(--radius-md);padding:10px 14px;margin-bottom:1rem;display:none;align-items:center;gap:10px;border:0.5px solid #BA7517;">
-      <span style="font-size:16px">👤</span>
-      <div style="flex:1;font-size:13px;color:#633806;">Estás como invitado. Los datos solo se guardan aquí.</div>
-      <span style="font-size:12px;font-weight:600;color:#1D9E75;cursor:pointer;white-space:nowrap" onclick="closeProfile();showPage('auth')">Crear cuenta →</span>
-    </div>
-
-    <!-- PROFILE MODAL -->
-    <div class="modal-backdrop" id="profile-modal" onclick="closeProfileOutside(event)">
-      <div class="profile-modal">
-        <div class="modal-handle"></div>
-        <div class="profile-header">
-          <div class="profile-avatar-lg" id="profile-avatar-lg">?</div>
-          <div class="profile-name" id="profile-name-display">...</div>
-          <div class="profile-email" id="profile-email-display">...</div>
-          <div class="profile-since" id="profile-since">Miembro desde ...</div>
-        </div>
-        <div class="profile-stats">
-          <div class="profile-stat"><div class="profile-stat-num" id="p-stat-total">0</div><div class="profile-stat-lbl">Poops totales</div></div>
-          <div class="profile-stat"><div class="profile-stat-num" id="p-stat-week">0</div><div class="profile-stat-lbl">Esta semana</div></div>
-          <div class="profile-stat"><div class="profile-stat-num" id="p-stat-streak">0</div><div class="profile-stat-lbl">Días activo</div></div>
-        </div>
-        <div class="profile-actions" id="profile-actions"></div>
-      </div>
-    </div>
-
-    <div class="a-card score-card-btn" onclick="toggleScoreExpand()">
-      <div class="score-row">
-        <div class="score-face-wrap" id="score-face-wrap">
-          <svg viewBox="0 0 52 52" fill="none"><circle cx="26" cy="26" r="24" fill="#D3D1C7"/><circle cx="26" cy="26" r="20" fill="#B4B2A9"/><ellipse cx="19" cy="22" rx="2.5" ry="3" fill="#888780"/><ellipse cx="33" cy="22" rx="2.5" ry="3" fill="#888780"/><circle cx="19" cy="21" r="1" fill="#F1EFE8"/><circle cx="33" cy="21" r="1" fill="#F1EFE8"/><path d="M19 33 Q26 37 33 33" stroke="#888780" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M13 13 Q17 9 19 13" stroke="#888780" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M33 13 Q35 9 39 13" stroke="#888780" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
-        </div>
-        <div style="flex:1">
-          <div class="score-label">Salud digestiva</div>
-          <div class="score-value" id="score-text">Sin datos aún</div>
-          <div class="score-sub" id="score-sub">Registra tu primer popo</div>
-        </div>
-        <div class="score-chevron" id="score-chevron">&#9660;</div>
-      </div>
-      <div class="score-expand" id="score-expand">
-        <div class="score-expand-title">Resumen de la semana</div>
-        <div class="insight-list" id="insight-list">
-          <div class="insight-item info"><span class="insight-icon">&#128161;</span><span>Registra algunos popos para ver tus insights.</span></div>
-        </div>
-        <div class="score-compare" id="score-compare" style="display:none"></div>
-      </div>
-    </div>
-
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-num" id="stat-total">0</div><div class="stat-lbl">Total</div></div>
-      <div class="stat-card"><div class="stat-num" id="stat-week">0</div><div class="stat-lbl">Esta semana</div></div>
-      <div class="stat-card" id="streak-card"><div class="stat-num" id="stat-streak">0</div><div class="stat-lbl" id="streak-lbl">Racha</div></div>
-    </div>
-
-    <div class="a-card week-card-btn" onclick="openCal()">
-      <div class="week-card-top">
-        <div class="section-title" style="margin-bottom:0">Esta semana</div>
-        <div class="week-hint">ver mes completo →</div>
-      </div>
-      <div class="weekly-bar" id="weekly-bar"></div>
-    </div>
-
-    <div class="cal-backdrop" id="cal-backdrop" onclick="closeCalOutside(event)">
-      <div class="cal-sheet">
-        <div class="cal-handle"></div>
-        <div class="cal-header">
-          <div class="cal-month-title" id="cal-month-title"></div>
-          <div class="cal-nav-row">
-            <button class="cal-nav-btn" onclick="changeCalMonth(-1)">&#8249;</button>
-            <button class="cal-nav-btn" onclick="changeCalMonth(1)">&#8250;</button>
-            <button class="cal-close-btn" onclick="closeCal()">&#x2715;</button>
+        <div
+          style="
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            border: 0.5px solid var(--border);
+            overflow: hidden;
+          "
+        >
+          <div style="position: relative; height: 320px" id="ob-slides">
+            <div
+              class="ob-slide ob-active"
+              data-step="0"
+              style="
+                padding: 2rem 1.75rem 1.5rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+              "
+            >
+              <div
+                style="font-size: 48px; margin-bottom: 1.25rem; line-height: 1"
+              >
+                &#128169;
+              </div>
+              <div
+                style="
+                  font-family: &quot;Syne&quot;, sans-serif;
+                  font-size: 20px;
+                  font-weight: 800;
+                  margin-bottom: 10px;
+                  line-height: 1.2;
+                "
+              >
+                Bienvenido a PoopLog
+              </div>
+              <div
+                style="
+                  font-size: 14px;
+                  color: var(--text-secondary);
+                  line-height: 1.65;
+                  max-width: 300px;
+                "
+              >
+                Tu diario digestivo personal. Lleva un registro de tu salud
+                intestinal de forma simple, privada y sin complicaciones.
+              </div>
+            </div>
+            <div
+              class="ob-slide"
+              data-step="1"
+              style="
+                padding: 2rem 1.75rem 1.5rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+              "
+            >
+              <div
+                style="font-size: 48px; margin-bottom: 1.25rem; line-height: 1"
+              >
+                &#128203;
+              </div>
+              <div
+                style="
+                  font-family: &quot;Syne&quot;, sans-serif;
+                  font-size: 20px;
+                  font-weight: 800;
+                  margin-bottom: 10px;
+                  line-height: 1.2;
+                "
+              >
+                Registra cada popo
+              </div>
+              <div
+                style="
+                  font-size: 14px;
+                  color: var(--text-secondary);
+                  line-height: 1.65;
+                  max-width: 300px;
+                "
+              >
+                Después de cada visita al baño, registra el tipo, qué tan fácil
+                salió y una nota opcional. Solo toma 10 segundos.
+              </div>
+            </div>
+            <div
+              class="ob-slide"
+              data-step="2"
+              style="
+                padding: 2rem 1.75rem 1.5rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+              "
+            >
+              <div
+                style="font-size: 48px; margin-bottom: 1.25rem; line-height: 1"
+              >
+                &#128200;
+              </div>
+              <div
+                style="
+                  font-family: &quot;Syne&quot;, sans-serif;
+                  font-size: 20px;
+                  font-weight: 800;
+                  margin-bottom: 10px;
+                  line-height: 1.2;
+                "
+              >
+                La escala de Bristol
+              </div>
+              <div
+                style="
+                  font-size: 14px;
+                  color: var(--text-secondary);
+                  line-height: 1.65;
+                  max-width: 300px;
+                "
+              >
+                Es el estándar médico para clasificar las heces. Elige la
+                ilustración que más se parezca a lo tuyo.
+              </div>
+              <div
+                style="
+                  display: flex;
+                  gap: 6px;
+                  margin-top: 12px;
+                  flex-wrap: wrap;
+                  justify-content: center;
+                "
+              >
+                <span
+                  style="
+                    font-size: 11px;
+                    padding: 3px 8px;
+                    border-radius: 10px;
+                    font-weight: 500;
+                    background: #fcebeb;
+                    color: #a32d2d;
+                  "
+                  >Tipo 1-2 — Estreñimiento</span
+                >
+                <span
+                  style="
+                    font-size: 11px;
+                    padding: 3px 8px;
+                    border-radius: 10px;
+                    font-weight: 500;
+                    background: #eaf3de;
+                    color: #27500a;
+                  "
+                  >Tipo 3-4 — Ideal</span
+                >
+                <span
+                  style="
+                    font-size: 11px;
+                    padding: 3px 8px;
+                    border-radius: 10px;
+                    font-weight: 500;
+                    background: #faeeda;
+                    color: #633806;
+                  "
+                  >Tipo 5-7 — Diarrea</span
+                >
+              </div>
+            </div>
+            <div
+              class="ob-slide"
+              data-step="3"
+              style="
+                padding: 2rem 1.75rem 1.5rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+              "
+            >
+              <div
+                style="font-size: 48px; margin-bottom: 1.25rem; line-height: 1"
+              >
+                &#128197;
+              </div>
+              <div
+                style="
+                  font-family: &quot;Syne&quot;, sans-serif;
+                  font-size: 20px;
+                  font-weight: 800;
+                  margin-bottom: 10px;
+                  line-height: 1.2;
+                "
+              >
+                Se te olvidó registrar
+              </div>
+              <div
+                style="
+                  font-size: 14px;
+                  color: var(--text-secondary);
+                  line-height: 1.65;
+                  max-width: 300px;
+                "
+              >
+                Sin problema. Puedes registrar popos pasados eligiendo
+                <span
+                  style="
+                    background: #e1f5ee;
+                    color: #085041;
+                    border-radius: 6px;
+                    padding: 1px 6px;
+                    font-weight: 500;
+                    font-size: 13px;
+                  "
+                  >hace 1h</span
+                >,
+                <span
+                  style="
+                    background: #e1f5ee;
+                    color: #085041;
+                    border-radius: 6px;
+                    padding: 1px 6px;
+                    font-weight: 500;
+                    font-size: 13px;
+                  "
+                  >ayer</span
+                >
+                o la fecha exacta.
+              </div>
+            </div>
+            <div
+              class="ob-slide"
+              data-step="4"
+              style="
+                padding: 2rem 1.75rem 1.5rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+              "
+            >
+              <div
+                style="font-size: 48px; margin-bottom: 1.25rem; line-height: 1"
+              >
+                &#128293;
+              </div>
+              <div
+                style="
+                  font-family: &quot;Syne&quot;, sans-serif;
+                  font-size: 20px;
+                  font-weight: 800;
+                  margin-bottom: 10px;
+                  line-height: 1.2;
+                "
+              >
+                Construye tu racha
+              </div>
+              <div
+                style="
+                  font-size: 14px;
+                  color: var(--text-secondary);
+                  line-height: 1.65;
+                  max-width: 300px;
+                "
+              >
+                Registra todos los días y acumula días consecutivos. A más
+                datos, más útiles son tus insights digestivos.
+              </div>
+            </div>
+            <div
+              class="ob-slide"
+              data-step="5"
+              style="
+                padding: 2rem 1.75rem 1.5rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+              "
+            >
+              <div
+                style="font-size: 48px; margin-bottom: 1.25rem; line-height: 1"
+              >
+                &#127881;
+              </div>
+              <div
+                style="
+                  font-family: &quot;Syne&quot;, sans-serif;
+                  font-size: 20px;
+                  font-weight: 800;
+                  margin-bottom: 10px;
+                  line-height: 1.2;
+                "
+              >
+                Todo listo
+              </div>
+              <div
+                style="
+                  font-size: 14px;
+                  color: var(--text-secondary);
+                  line-height: 1.65;
+                  max-width: 300px;
+                "
+              >
+                Tus datos son privados y solo los ves tú. Puedes volver a ver
+                esta guía desde el menú de perfil en cualquier momento.
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              padding: 1.25rem 1.75rem;
+              border-top: 0.5px solid var(--border);
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: 12px;
+            "
+          >
+            <div
+              style="display: flex; gap: 6px; align-items: center"
+              id="ob-dots"
+            ></div>
+            <div style="display: flex; align-items: center; gap: 8px">
+              <button
+                id="ob-back"
+                onclick="obBack()"
+                style="
+                  display: none;
+                  background: var(--bg-secondary);
+                  border: 0.5px solid var(--border-strong);
+                  color: var(--text-primary);
+                  border-radius: var(--radius-md);
+                  padding: 10px 16px;
+                  font-family: &quot;Syne&quot;, sans-serif;
+                  font-size: 14px;
+                  font-weight: 700;
+                  cursor: pointer;
+                "
+              >
+                &#8592; Volver
+              </button>
+              <button
+                id="ob-next"
+                onclick="obNext()"
+                style="
+                  background: #1d9e75;
+                  color: white;
+                  border: none;
+                  border-radius: var(--radius-md);
+                  padding: 10px 20px;
+                  font-family: &quot;Syne&quot;, sans-serif;
+                  font-size: 14px;
+                  font-weight: 700;
+                  cursor: pointer;
+                "
+              >
+                Siguiente
+              </button>
+            </div>
           </div>
         </div>
-        <div class="dow-row">
-          <div class="dow-cell">lun</div><div class="dow-cell">mar</div><div class="dow-cell">mie</div>
-          <div class="dow-cell">jue</div><div class="dow-cell">vie</div><div class="dow-cell">sab</div><div class="dow-cell">dom</div>
+      </div>
+    </div>
+
+    <div id="page-auth" class="page">
+      <div class="auth-wrap">
+        <div class="logo">
+          <div class="logo-title">💩 PoopLog</div>
+          <div class="logo-sub">Tu diario digestivo personal</div>
         </div>
-        <div class="cal-grid" id="cal-grid"></div>
-        <div class="cal-detail" id="cal-detail">
-          <div class="cal-detail-empty">Toca un dia con registros para ver el detalle</div>
+        <div class="card">
+          <div class="tab-row">
+            <div class="tab active" id="tab-login" onclick="switchTab('login')">
+              Iniciar sesión
+            </div>
+            <div class="tab" id="tab-register" onclick="switchTab('register')">
+              Crear cuenta
+            </div>
+          </div>
+
+          <!-- LOGIN -->
+          <div id="panel-login" class="panel active">
+            <div class="error-msg" id="login-error"></div>
+            <div class="form-group">
+              <label class="form-label">Correo electrónico</label>
+              <input
+                class="form-input"
+                type="email"
+                id="login-email"
+                placeholder="tu@correo.com"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contraseña</label>
+              <input
+                class="form-input"
+                type="password"
+                id="login-pass"
+                placeholder="••••••••"
+                onkeydown="if (event.key === 'Enter') doLogin();"
+              />
+            </div>
+            <button class="btn-primary" id="btn-login" onclick="doLogin()">
+              Entrar
+            </button>
+            <div class="divider">
+              <div class="divider-line"></div>
+              <div class="divider-text">o continúa con</div>
+              <div class="divider-line"></div>
+            </div>
+            <button class="btn-google" onclick="doGoogle()">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path
+                  d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+                  fill="#4285F4"
+                />
+                <path
+                  d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
+                  fill="#34A853"
+                />
+                <path
+                  d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+                  fill="#FBBC05"
+                />
+                <path
+                  d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"
+                  fill="#EA4335"
+                />
+              </svg>
+              Continuar con Google
+            </button>
+            <div class="helper-text">
+              ¿Olvidaste tu contraseña?
+              <span class="helper-link" onclick="switchPanel('reset')"
+                >Recupérala aquí</span
+              >
+            </div>
+            <div class="divider">
+              <div class="divider-line"></div>
+              <div class="divider-text">o</div>
+              <div class="divider-line"></div>
+            </div>
+            <button class="btn-guest" onclick="enterAsGuest()">
+              Continuar como invitado
+            </button>
+            <div class="helper-text" style="margin-top: 0.75rem">
+              Sin cuenta — los datos solo se guardan en este dispositivo
+            </div>
+          </div>
+
+          <!-- REGISTER -->
+          <div id="panel-register" class="panel">
+            <div class="error-msg" id="register-error"></div>
+            <div class="form-group">
+              <label class="form-label">Correo electrónico</label>
+              <input
+                class="form-input"
+                type="email"
+                id="reg-email"
+                placeholder="tu@correo.com"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contraseña</label>
+              <input
+                class="form-input"
+                type="password"
+                id="reg-pass"
+                placeholder="Mínimo 8 caracteres"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirmar contraseña</label>
+              <input
+                class="form-input"
+                type="password"
+                id="reg-pass2"
+                placeholder="Repite tu contraseña"
+                onkeydown="if (event.key === 'Enter') doRegister();"
+              />
+            </div>
+            <button
+              class="btn-primary"
+              id="btn-register"
+              onclick="doRegister()"
+            >
+              Crear cuenta
+            </button>
+            <div class="divider">
+              <div class="divider-line"></div>
+              <div class="divider-text">o continúa con</div>
+              <div class="divider-line"></div>
+            </div>
+            <button class="btn-google" onclick="doGoogle()">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path
+                  d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+                  fill="#4285F4"
+                />
+                <path
+                  d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
+                  fill="#34A853"
+                />
+                <path
+                  d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+                  fill="#FBBC05"
+                />
+                <path
+                  d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"
+                  fill="#EA4335"
+                />
+              </svg>
+              Continuar con Google
+            </button>
+            <div class="privacy-note">
+              <span>🔒</span
+              ><span
+                >Tus datos son privados. Nunca compartimos tu información. Los
+                registros solo los ves tú.</span
+              >
+            </div>
+          </div>
+
+          <!-- VERIFY -->
+          <div id="panel-verify" class="panel">
+            <div class="verify-screen">
+              <div style="margin: 0 auto 1rem; width: 56px; height: 56px">
+                <svg viewBox="0 0 56 56" fill="none">
+                  <circle cx="28" cy="28" r="26" fill="#E1F5EE" />
+                  <path
+                    d="M12 28 L22 38 L44 18"
+                    stroke="#1D9E75"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    fill="none"
+                  />
+                </svg>
+              </div>
+              <div class="verify-title">Revisa tu correo</div>
+              <div class="verify-sub">
+                Enviamos un enlace a<br /><span
+                  class="email-highlight"
+                  id="verify-email-show"
+                ></span
+                ><br /><br />Haz clic en el enlace para activar tu cuenta.
+              </div>
+              <button class="btn-primary" onclick="switchTab('login')">
+                Volver al inicio de sesión
+              </button>
+              <div class="helper-text" style="margin-top: 1rem">
+                ¿No llegó? Revisa tu carpeta de spam.
+              </div>
+            </div>
+          </div>
+
+          <!-- RESET -->
+          <div id="panel-reset" class="panel">
+            <div style="margin-bottom: 1.25rem">
+              <div
+                style="
+                  font-family: &quot;Syne&quot;, sans-serif;
+                  font-size: 18px;
+                  font-weight: 700;
+                  margin-bottom: 6px;
+                "
+              >
+                Recuperar contraseña
+              </div>
+              <div
+                style="
+                  font-size: 13px;
+                  color: var(--text-secondary);
+                  line-height: 1.5;
+                "
+              >
+                Te enviamos un enlace para restablecer tu contraseña.
+              </div>
+            </div>
+            <div class="error-msg" id="reset-error"></div>
+            <div class="form-group">
+              <label class="form-label">Correo electrónico</label>
+              <input
+                class="form-input"
+                type="email"
+                id="reset-email"
+                placeholder="tu@correo.com"
+              />
+            </div>
+            <button class="btn-primary" onclick="doReset()">
+              Enviar enlace
+            </button>
+            <div class="helper-text" style="margin-top: 1rem">
+              <span class="helper-link" onclick="switchTab('login')"
+                >← Volver</span
+              >
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="a-card">
-      <div class="section-title">Registrar popo</div>
-
-      <div class="time-toggle-row">
-        <div class="time-toggle-left">
-          <div class="time-toggle-label">Lo hiciste ahora?</div>
-          <div class="time-toggle-sub" id="toggle-sub">Registrando para ahora mismo</div>
-        </div>
-        <button class="tog on" id="now-toggle" onclick="toggleTime()"><div class="tog-knob"></div></button>
-      </div>
-      <div class="datetime-panel" id="datetime-panel">
-        <div class="form-lbl">Cuando fue?</div>
-        <div class="quick-btns">
-          <div class="quick-btn" data-offset="1" onclick="selectQuick(this)">
-            <div class="quick-btn-label">Hace 1h</div><div class="quick-btn-sub" id="q-label-1"></div>
-          </div>
-          <div class="quick-btn sel" data-offset="24" onclick="selectQuick(this)">
-            <div class="quick-btn-label">Ayer</div><div class="quick-btn-sub" id="q-label-24"></div>
-          </div>
-          <div class="quick-btn" data-offset="48" onclick="selectQuick(this)">
-            <div class="quick-btn-label">Hace 2 dias</div><div class="quick-btn-sub" id="q-label-48"></div>
+    <!-- APP -->
+    <div id="page-app" class="page">
+      <div class="app-root">
+        <div class="app-header">
+          <div class="app-title">💩 PoopLog</div>
+          <div class="user-chip" onclick="openProfile()">
+            <div class="avatar" id="user-avatar">?</div>
+            <div class="chip-email" id="user-email-display">...</div>
           </div>
         </div>
-        <div class="custom-dt-row">
-          <div class="dt-wrap"><div class="dt-lbl">Fecha</div><input type="date" id="custom-date" onchange="updateCustomDt()"/></div>
-          <div class="dt-wrap"><div class="dt-lbl">Hora aproximada</div><input type="time" id="custom-time" onchange="updateCustomDt()"/></div>
-        </div>
-        <div class="time-pill" id="time-pill">Cargando...</div>
-      </div>
 
-      <div class="form-row">
-        <div class="form-lbl">¿Cómo fue? (escala de Bristol)</div>
-        <div class="type-list">
-          <div class="type-item" data-type="1" onclick="selectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><circle cx="10" cy="12" r="6" fill="#7B4A2D"/><circle cx="22" cy="8" r="5" fill="#6B3D22"/><circle cx="33" cy="13" r="6" fill="#7B4A2D"/><circle cx="16" cy="26" r="5" fill="#6B3D22"/><circle cx="28" cy="29" r="4" fill="#7B4A2D"/><circle cx="41" cy="22" r="5" fill="#6B3D22"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 1 — Bolitas separadas</div><div class="type-item-desc">Pelotitas duras, difíciles de expulsar</div></div><span class="type-item-badge">Estreñimiento severo</span></div>
-          <div class="type-item" data-type="2" onclick="selectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><ellipse cx="26" cy="22" rx="20" ry="11" fill="#6B3D22"/><circle cx="14" cy="18" r="7" fill="#7B4A2D"/><circle cx="24" cy="14" r="7" fill="#6B3D22"/><circle cx="34" cy="18" r="7" fill="#7B4A2D"/><circle cx="19" cy="26" r="6" fill="#6B3D22"/><circle cx="31" cy="26" r="6" fill="#7B4A2D"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 2 — Salchicha grumosa</div><div class="type-item-desc">Con bolitas pegadas, dura</div></div><span class="type-item-badge">Estreñimiento leve</span></div>
-          <div class="type-item" data-type="3" onclick="selectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><rect x="8" y="12" width="36" height="18" rx="9" fill="#7B4A2D"/><path d="M14 15 Q18 13 22 16 Q26 13 30 16 Q34 13 38 16" stroke="#5C3018" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M12 20 Q16 18 20 21 Q24 18 28 21 Q32 18 36 21 Q40 18 42 21" stroke="#5C3018" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 3 — Con grietas</div><div class="type-item-desc">Forma de salchicha con fisuras</div></div><span class="type-item-badge">Normal</span></div>
-          <div class="type-item selected" data-type="4" onclick="selectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><ellipse cx="26" cy="20" rx="10" ry="16" fill="#7B4A2D"/><ellipse cx="26" cy="20" rx="6" ry="13" fill="#8B5A3A"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 4 — Lisa y suave ✓</div><div class="type-item-desc">Como una salchicha o serpiente</div></div><span class="type-item-badge">Ideal ✓</span></div>
-          <div class="type-item" data-type="5" onclick="selectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><ellipse cx="12" cy="16" rx="8" ry="6" fill="#7B4A2D"/><ellipse cx="27" cy="12" rx="9" ry="6" fill="#6B3D22"/><ellipse cx="40" cy="17" rx="7" ry="5" fill="#7B4A2D"/><ellipse cx="20" cy="28" rx="8" ry="5" fill="#6B3D22"/><ellipse cx="35" cy="29" rx="7" ry="5" fill="#7B4A2D"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 5 — Trozos blandos</div><div class="type-item-desc">Bordes definidos, fácil de pasar</div></div><span class="type-item-badge">Falta fibra</span></div>
-          <div class="type-item" data-type="6" onclick="selectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><path d="M6 22 Q10 14 18 18 Q22 10 30 16 Q36 8 44 18 Q48 24 42 28 Q34 34 24 30 Q14 34 8 28 Z" fill="#8B5A3A"/><path d="M10 20 Q14 15 20 18 Q25 12 32 17 Q38 12 44 20" stroke="#6B3D22" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 6 — Esponjoso</div><div class="type-item-desc">Bordes irregulares, casi líquido</div></div><span class="type-item-badge">Diarrea leve</span></div>
-          <div class="type-item" data-type="7" onclick="selectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><ellipse cx="26" cy="28" rx="22" ry="7" fill="#C4863A" opacity="0.5"/><ellipse cx="26" cy="26" rx="20" ry="5" fill="#C4863A" opacity="0.7"/><ellipse cx="22" cy="22" rx="14" ry="4" fill="#B87A30" opacity="0.8"/><ellipse cx="30" cy="20" rx="10" ry="3" fill="#A06828"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 7 — Completamente líquido</div><div class="type-item-desc">Sin partes sólidas</div></div><span class="type-item-badge">Diarrea severa</span></div>
+        <!-- GUEST BANNER -->
+        <div id="inactivity-banner" class="inactivity-banner">
+          <span style="font-size: 20px">&#128169;</span>
+          <div
+            style="flex: 1; font-size: 13px; color: #085041; line-height: 1.4"
+          >
+            <strong style="font-weight: 600"
+              >Llevas más de 2 días sin registrar.</strong
+            >
+            ¿Cómo ha estado el popo?
+          </div>
+          <button class="inactivity-close" onclick="dismissInactivityBanner()">
+            &#x2715;
+          </button>
+        </div>
+
+        <div
+          id="guest-banner"
+          style="
+            display: none;
+            background: #faeeda;
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            margin-bottom: 1rem;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            border: 0.5px solid #ba7517;
+          "
+        >
+          <span style="font-size: 16px">👤</span>
+          <div style="flex: 1; font-size: 13px; color: #633806">
+            Estás como invitado. Los datos solo se guardan aquí.
+          </div>
+          <span
+            style="
+              font-size: 12px;
+              font-weight: 600;
+              color: #1d9e75;
+              cursor: pointer;
+              white-space: nowrap;
+            "
+            onclick="
+              closeProfile();
+              showPage('auth');
+            "
+            >Crear cuenta →</span
+          >
+        </div>
+
+        <!-- PROFILE MODAL -->
+        <div
+          class="modal-backdrop"
+          id="profile-modal"
+          onclick="closeProfileOutside(event)"
+        >
+          <div class="profile-modal">
+            <div class="modal-handle"></div>
+            <div class="profile-header">
+              <div class="profile-avatar-lg" id="profile-avatar-lg">?</div>
+              <div class="profile-name" id="profile-name-display">...</div>
+              <div class="profile-email" id="profile-email-display">...</div>
+              <div class="profile-since" id="profile-since">
+                Miembro desde ...
+              </div>
+            </div>
+            <div class="profile-stats">
+              <div class="profile-stat">
+                <div class="profile-stat-num" id="p-stat-total">0</div>
+                <div class="profile-stat-lbl">Poops totales</div>
+              </div>
+              <div class="profile-stat">
+                <div class="profile-stat-num" id="p-stat-week">0</div>
+                <div class="profile-stat-lbl">Esta semana</div>
+              </div>
+              <div class="profile-stat">
+                <div class="profile-stat-num" id="p-stat-streak">0</div>
+                <div class="profile-stat-lbl">Días activo</div>
+              </div>
+            </div>
+            <div class="profile-actions" id="profile-actions"></div>
+          </div>
+        </div>
+
+        <div class="a-card score-card-btn" onclick="toggleScoreExpand()">
+          <div class="score-row">
+            <div class="score-face-wrap" id="score-face-wrap">
+              <svg viewBox="0 0 52 52" fill="none">
+                <circle cx="26" cy="26" r="24" fill="#D3D1C7" />
+                <circle cx="26" cy="26" r="20" fill="#B4B2A9" />
+                <ellipse cx="19" cy="22" rx="2.5" ry="3" fill="#888780" />
+                <ellipse cx="33" cy="22" rx="2.5" ry="3" fill="#888780" />
+                <circle cx="19" cy="21" r="1" fill="#F1EFE8" />
+                <circle cx="33" cy="21" r="1" fill="#F1EFE8" />
+                <path
+                  d="M19 33 Q26 37 33 33"
+                  stroke="#888780"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M13 13 Q17 9 19 13"
+                  stroke="#888780"
+                  stroke-width="1.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M33 13 Q35 9 39 13"
+                  stroke="#888780"
+                  stroke-width="1.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+            <div style="flex: 1">
+              <div class="score-label">Salud digestiva</div>
+              <div class="score-value" id="score-text">Sin datos aún</div>
+              <div class="score-sub" id="score-sub">
+                Registra tu primer popo
+              </div>
+            </div>
+            <div class="score-chevron" id="score-chevron">&#9660;</div>
+          </div>
+          <div class="score-expand" id="score-expand">
+            <div class="score-expand-title">Resumen de la semana</div>
+            <div class="insight-list" id="insight-list">
+              <div class="insight-item info">
+                <span class="insight-icon">&#128161;</span
+                ><span>Registra algunos popos para ver tus insights.</span>
+              </div>
+            </div>
+            <div
+              class="score-compare"
+              id="score-compare"
+              style="display: none"
+            ></div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-num" id="stat-total">0</div>
+            <div class="stat-lbl">Total</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="stat-week">0</div>
+            <div class="stat-lbl">Esta semana</div>
+          </div>
+          <div class="stat-card" id="streak-card">
+            <div class="stat-num" id="stat-streak">0</div>
+            <div class="stat-lbl" id="streak-lbl">Racha</div>
+          </div>
+        </div>
+
+        <div class="a-card week-card-btn" onclick="openCal()">
+          <div class="week-card-top">
+            <div class="section-title" style="margin-bottom: 0">
+              Esta semana
+            </div>
+            <div class="week-hint">ver mes completo →</div>
+          </div>
+          <div class="weekly-bar" id="weekly-bar"></div>
+        </div>
+
+        <div
+          class="cal-backdrop"
+          id="cal-backdrop"
+          onclick="closeCalOutside(event)"
+        >
+          <div class="cal-sheet">
+            <div class="cal-handle"></div>
+            <div class="cal-header">
+              <div class="cal-month-title" id="cal-month-title"></div>
+              <div class="cal-nav-row">
+                <button class="cal-nav-btn" onclick="changeCalMonth(-1)">
+                  &#8249;
+                </button>
+                <button class="cal-nav-btn" onclick="changeCalMonth(1)">
+                  &#8250;
+                </button>
+                <button class="cal-close-btn" onclick="closeCal()">
+                  &#x2715;
+                </button>
+              </div>
+            </div>
+            <div class="dow-row">
+              <div class="dow-cell">lun</div>
+              <div class="dow-cell">mar</div>
+              <div class="dow-cell">mie</div>
+              <div class="dow-cell">jue</div>
+              <div class="dow-cell">vie</div>
+              <div class="dow-cell">sab</div>
+              <div class="dow-cell">dom</div>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <div class="cal-detail" id="cal-detail">
+              <div class="cal-detail-empty">
+                Toca un dia con registros para ver el detalle
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="a-card">
+          <div class="section-title">Registrar popo</div>
+
+          <div class="time-toggle-row">
+            <div class="time-toggle-left">
+              <div class="time-toggle-label">Lo hiciste ahora?</div>
+              <div class="time-toggle-sub" id="toggle-sub">
+                Registrando para ahora mismo
+              </div>
+            </div>
+            <button class="tog on" id="now-toggle" onclick="toggleTime()">
+              <div class="tog-knob"></div>
+            </button>
+          </div>
+          <div class="datetime-panel" id="datetime-panel">
+            <div class="form-lbl">Cuando fue?</div>
+            <div class="quick-btns">
+              <div
+                class="quick-btn"
+                data-offset="1"
+                onclick="selectQuick(this)"
+              >
+                <div class="quick-btn-label">Hace 1h</div>
+                <div class="quick-btn-sub" id="q-label-1"></div>
+              </div>
+              <div
+                class="quick-btn sel"
+                data-offset="24"
+                onclick="selectQuick(this)"
+              >
+                <div class="quick-btn-label">Ayer</div>
+                <div class="quick-btn-sub" id="q-label-24"></div>
+              </div>
+              <div
+                class="quick-btn"
+                data-offset="48"
+                onclick="selectQuick(this)"
+              >
+                <div class="quick-btn-label">Hace 2 dias</div>
+                <div class="quick-btn-sub" id="q-label-48"></div>
+              </div>
+            </div>
+            <div class="custom-dt-row">
+              <div class="dt-wrap">
+                <div class="dt-lbl">Fecha</div>
+                <input
+                  type="date"
+                  id="custom-date"
+                  onchange="updateCustomDt()"
+                />
+              </div>
+              <div class="dt-wrap">
+                <div class="dt-lbl">Hora aproximada</div>
+                <input
+                  type="time"
+                  id="custom-time"
+                  onchange="updateCustomDt()"
+                />
+              </div>
+            </div>
+            <div class="time-pill" id="time-pill">Cargando...</div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-lbl">¿Cómo fue? (escala de Bristol)</div>
+            <div class="type-list">
+              <div class="type-item" data-type="1" onclick="selectType(this)">
+                <div class="type-icon">
+                  <svg viewBox="0 0 52 40" fill="none">
+                    <circle cx="10" cy="12" r="6" fill="#7B4A2D" />
+                    <circle cx="22" cy="8" r="5" fill="#6B3D22" />
+                    <circle cx="33" cy="13" r="6" fill="#7B4A2D" />
+                    <circle cx="16" cy="26" r="5" fill="#6B3D22" />
+                    <circle cx="28" cy="29" r="4" fill="#7B4A2D" />
+                    <circle cx="41" cy="22" r="5" fill="#6B3D22" />
+                  </svg>
+                </div>
+                <div class="type-item-info">
+                  <div class="type-item-name">Tipo 1 — Bolitas separadas</div>
+                  <div class="type-item-desc">
+                    Pelotitas duras, difíciles de expulsar
+                  </div>
+                </div>
+                <span class="type-item-badge">Estreñimiento severo</span>
+              </div>
+              <div class="type-item" data-type="2" onclick="selectType(this)">
+                <div class="type-icon">
+                  <svg viewBox="0 0 52 40" fill="none">
+                    <ellipse cx="26" cy="22" rx="20" ry="11" fill="#6B3D22" />
+                    <circle cx="14" cy="18" r="7" fill="#7B4A2D" />
+                    <circle cx="24" cy="14" r="7" fill="#6B3D22" />
+                    <circle cx="34" cy="18" r="7" fill="#7B4A2D" />
+                    <circle cx="19" cy="26" r="6" fill="#6B3D22" />
+                    <circle cx="31" cy="26" r="6" fill="#7B4A2D" />
+                  </svg>
+                </div>
+                <div class="type-item-info">
+                  <div class="type-item-name">Tipo 2 — Salchicha grumosa</div>
+                  <div class="type-item-desc">Con bolitas pegadas, dura</div>
+                </div>
+                <span class="type-item-badge">Estreñimiento leve</span>
+              </div>
+              <div class="type-item" data-type="3" onclick="selectType(this)">
+                <div class="type-icon">
+                  <svg viewBox="0 0 52 40" fill="none">
+                    <rect
+                      x="8"
+                      y="12"
+                      width="36"
+                      height="18"
+                      rx="9"
+                      fill="#7B4A2D"
+                    />
+                    <path
+                      d="M14 15 Q18 13 22 16 Q26 13 30 16 Q34 13 38 16"
+                      stroke="#5C3018"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M12 20 Q16 18 20 21 Q24 18 28 21 Q32 18 36 21 Q40 18 42 21"
+                      stroke="#5C3018"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </div>
+                <div class="type-item-info">
+                  <div class="type-item-name">Tipo 3 — Con grietas</div>
+                  <div class="type-item-desc">
+                    Forma de salchicha con fisuras
+                  </div>
+                </div>
+                <span class="type-item-badge">Normal</span>
+              </div>
+              <div
+                class="type-item selected"
+                data-type="4"
+                onclick="selectType(this)"
+              >
+                <div class="type-icon">
+                  <svg viewBox="0 0 52 40" fill="none">
+                    <ellipse cx="26" cy="20" rx="10" ry="16" fill="#7B4A2D" />
+                    <ellipse cx="26" cy="20" rx="6" ry="13" fill="#8B5A3A" />
+                  </svg>
+                </div>
+                <div class="type-item-info">
+                  <div class="type-item-name">Tipo 4 — Lisa y suave ✓</div>
+                  <div class="type-item-desc">
+                    Como una salchicha o serpiente
+                  </div>
+                </div>
+                <span class="type-item-badge">Ideal ✓</span>
+              </div>
+              <div class="type-item" data-type="5" onclick="selectType(this)">
+                <div class="type-icon">
+                  <svg viewBox="0 0 52 40" fill="none">
+                    <ellipse cx="12" cy="16" rx="8" ry="6" fill="#7B4A2D" />
+                    <ellipse cx="27" cy="12" rx="9" ry="6" fill="#6B3D22" />
+                    <ellipse cx="40" cy="17" rx="7" ry="5" fill="#7B4A2D" />
+                    <ellipse cx="20" cy="28" rx="8" ry="5" fill="#6B3D22" />
+                    <ellipse cx="35" cy="29" rx="7" ry="5" fill="#7B4A2D" />
+                  </svg>
+                </div>
+                <div class="type-item-info">
+                  <div class="type-item-name">Tipo 5 — Trozos blandos</div>
+                  <div class="type-item-desc">
+                    Bordes definidos, fácil de pasar
+                  </div>
+                </div>
+                <span class="type-item-badge">Falta fibra</span>
+              </div>
+              <div class="type-item" data-type="6" onclick="selectType(this)">
+                <div class="type-icon">
+                  <svg viewBox="0 0 52 40" fill="none">
+                    <path
+                      d="M6 22 Q10 14 18 18 Q22 10 30 16 Q36 8 44 18 Q48 24 42 28 Q34 34 24 30 Q14 34 8 28 Z"
+                      fill="#8B5A3A"
+                    />
+                    <path
+                      d="M10 20 Q14 15 20 18 Q25 12 32 17 Q38 12 44 20"
+                      stroke="#6B3D22"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </div>
+                <div class="type-item-info">
+                  <div class="type-item-name">Tipo 6 — Esponjoso</div>
+                  <div class="type-item-desc">
+                    Bordes irregulares, casi líquido
+                  </div>
+                </div>
+                <span class="type-item-badge">Diarrea leve</span>
+              </div>
+              <div class="type-item" data-type="7" onclick="selectType(this)">
+                <div class="type-icon">
+                  <svg viewBox="0 0 52 40" fill="none">
+                    <ellipse
+                      cx="26"
+                      cy="28"
+                      rx="22"
+                      ry="7"
+                      fill="#C4863A"
+                      opacity="0.5"
+                    />
+                    <ellipse
+                      cx="26"
+                      cy="26"
+                      rx="20"
+                      ry="5"
+                      fill="#C4863A"
+                      opacity="0.7"
+                    />
+                    <ellipse
+                      cx="22"
+                      cy="22"
+                      rx="14"
+                      ry="4"
+                      fill="#B87A30"
+                      opacity="0.8"
+                    />
+                    <ellipse cx="30" cy="20" rx="10" ry="3" fill="#A06828" />
+                  </svg>
+                </div>
+                <div class="type-item-info">
+                  <div class="type-item-name">
+                    Tipo 7 — Completamente líquido
+                  </div>
+                  <div class="type-item-desc">Sin partes sólidas</div>
+                </div>
+                <span class="type-item-badge">Diarrea severa</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-lbl">¿Qué tan fácil salió?</div>
+            <div class="effort-grid">
+              <div
+                class="effort-btn"
+                data-effort="smooth"
+                onclick="selectEffort(this)"
+              >
+                <div class="effort-svg">
+                  <svg viewBox="0 0 44 44" fill="none">
+                    <circle cx="22" cy="22" r="20" fill="#7B4A2D" />
+                    <circle cx="22" cy="22" r="17" fill="#8B5A3A" />
+                    <ellipse cx="16" cy="19" rx="2.5" ry="3" fill="#5C3018" />
+                    <ellipse cx="28" cy="19" rx="2.5" ry="3" fill="#5C3018" />
+                    <circle cx="16" cy="18" r="1" fill="#F5E6D3" />
+                    <circle cx="28" cy="18" r="1" fill="#F5E6D3" />
+                    <path
+                      d="M15 29 Q22 34 29 29"
+                      stroke="#5C3018"
+                      stroke-width="2"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M10 10 Q14 6 16 10"
+                      stroke="#7B4A2D"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M28 10 Q30 6 34 10"
+                      stroke="#7B4A2D"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </div>
+                <span class="effort-btn-label">Solo</span
+                ><span class="effort-btn-sub">Sin esfuerzo</span>
+              </div>
+              <div
+                class="effort-btn"
+                data-effort="bit"
+                onclick="selectEffort(this)"
+              >
+                <div class="effort-svg">
+                  <svg viewBox="0 0 44 44" fill="none">
+                    <circle cx="22" cy="22" r="20" fill="#7B4A2D" />
+                    <circle cx="22" cy="22" r="17" fill="#8B5A3A" />
+                    <ellipse cx="16" cy="20" rx="2.5" ry="2.5" fill="#5C3018" />
+                    <ellipse cx="28" cy="20" rx="2.5" ry="2.5" fill="#5C3018" />
+                    <circle cx="16" cy="19" r="1" fill="#F5E6D3" />
+                    <circle cx="28" cy="19" r="1" fill="#F5E6D3" />
+                    <path
+                      d="M15 29 Q22 33 29 29"
+                      stroke="#5C3018"
+                      stroke-width="2"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M13 13 Q16 10 19 13"
+                      stroke="#5C3018"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M25 13 Q28 10 31 13"
+                      stroke="#5C3018"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </div>
+                <span class="effort-btn-label">Poco esfuerzo</span
+                ><span class="effort-btn-sub">Leve empujoncito</span>
+              </div>
+              <div
+                class="effort-btn"
+                data-effort="hard"
+                onclick="selectEffort(this)"
+              >
+                <div class="effort-svg">
+                  <svg viewBox="0 0 44 44" fill="none">
+                    <circle cx="22" cy="22" r="20" fill="#7B4A2D" />
+                    <circle cx="22" cy="22" r="17" fill="#8B5A3A" />
+                    <ellipse cx="16" cy="21" rx="3" ry="2.5" fill="#5C3018" />
+                    <ellipse cx="28" cy="21" rx="3" ry="2.5" fill="#5C3018" />
+                    <circle cx="16" cy="20" r="1" fill="#F5E6D3" />
+                    <circle cx="28" cy="20" r="1" fill="#F5E6D3" />
+                    <path
+                      d="M15 31 Q22 28 29 31"
+                      stroke="#5C3018"
+                      stroke-width="2"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M13 14 Q16 11 19 14"
+                      stroke="#5C3018"
+                      stroke-width="2"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M25 14 Q28 11 31 14"
+                      stroke="#5C3018"
+                      stroke-width="2"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                    <ellipse
+                      cx="10"
+                      cy="20"
+                      rx="3"
+                      ry="2"
+                      fill="#6B3D22"
+                      opacity="0.7"
+                    />
+                    <ellipse
+                      cx="34"
+                      cy="20"
+                      rx="3"
+                      ry="2"
+                      fill="#6B3D22"
+                      opacity="0.7"
+                    />
+                  </svg>
+                </div>
+                <span class="effort-btn-label">Con esfuerzo</span
+                ><span class="effort-btn-sub">Hubo que trabajarla</span>
+              </div>
+              <div
+                class="effort-btn"
+                data-effort="brutal"
+                onclick="selectEffort(this)"
+              >
+                <div class="effort-svg">
+                  <svg viewBox="0 0 44 44" fill="none">
+                    <circle cx="22" cy="22" r="20" fill="#7B4A2D" />
+                    <circle cx="22" cy="22" r="17" fill="#8B5A3A" />
+                    <ellipse cx="16" cy="22" rx="3.5" ry="2.5" fill="#5C3018" />
+                    <ellipse cx="28" cy="22" rx="3.5" ry="2.5" fill="#5C3018" />
+                    <circle cx="16" cy="21" r="1" fill="#F5E6D3" />
+                    <circle cx="28" cy="21" r="1" fill="#F5E6D3" />
+                    <path
+                      d="M15 32 Q22 29 29 32"
+                      stroke="#5C3018"
+                      stroke-width="2"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M12 13 L15 16M19 11 L18 15"
+                      stroke="#5C3018"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M32 13 L29 16M25 11 L26 15"
+                      stroke="#5C3018"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M9 18 L12 19M9 22 L12 21"
+                      stroke="#5C3018"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M35 18 L32 19M35 22 L32 21"
+                      stroke="#5C3018"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </div>
+                <span class="effort-btn-label">Una lucha</span
+                ><span class="effort-btn-sub">Misión casi imposible</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-lbl">Notas (opcional)</div>
+            <textarea
+              id="notes-input"
+              placeholder="ej. después del almuerzo, tomé mucha agua..."
+            ></textarea>
+          </div>
+          <button class="submit-btn" id="btn-submit" onclick="logPoop()">
+            💩 Registrar popo
+          </button>
+        </div>
+
+        <div class="section-title">Historial</div>
+        <div class="log-list" id="log-list">
+          <div
+            class="edit-modal-backdrop"
+            id="edit-backdrop"
+            onclick="closeEditOutside(event)"
+          >
+            <div class="edit-sheet">
+              <div class="edit-header">
+                <div class="edit-title">Editar registro</div>
+                <button class="cal-close-btn" onclick="closeEdit()">
+                  &#x2715;
+                </button>
+              </div>
+              <div class="edit-body">
+                <div class="edit-section-lbl">Tipo de popo</div>
+                <div class="edit-type-list" id="edit-type-list">
+                  <div
+                    class="type-item"
+                    data-type="1"
+                    onclick="editSelectType(this)"
+                  >
+                    <div class="type-icon">
+                      <svg viewBox="0 0 52 40" fill="none">
+                        <circle cx="10" cy="12" r="6" fill="#7B4A2D" />
+                        <circle cx="22" cy="8" r="5" fill="#6B3D22" />
+                        <circle cx="33" cy="13" r="6" fill="#7B4A2D" />
+                        <circle cx="16" cy="26" r="5" fill="#6B3D22" />
+                        <circle cx="28" cy="29" r="4" fill="#7B4A2D" />
+                        <circle cx="41" cy="22" r="5" fill="#6B3D22" />
+                      </svg>
+                    </div>
+                    <div class="type-item-info">
+                      <div class="type-item-name">
+                        Tipo 1 — Bolitas separadas
+                      </div>
+                      <div class="type-item-desc">
+                        Pelotitas duras, dificiles de expulsar
+                      </div>
+                    </div>
+                    <span class="type-item-badge">Estrenimiento severo</span>
+                  </div>
+                  <div
+                    class="type-item"
+                    data-type="2"
+                    onclick="editSelectType(this)"
+                  >
+                    <div class="type-icon">
+                      <svg viewBox="0 0 52 40" fill="none">
+                        <ellipse
+                          cx="26"
+                          cy="22"
+                          rx="20"
+                          ry="11"
+                          fill="#6B3D22"
+                        />
+                        <circle cx="14" cy="18" r="7" fill="#7B4A2D" />
+                        <circle cx="24" cy="14" r="7" fill="#6B3D22" />
+                        <circle cx="34" cy="18" r="7" fill="#7B4A2D" />
+                        <circle cx="19" cy="26" r="6" fill="#6B3D22" />
+                        <circle cx="31" cy="26" r="6" fill="#7B4A2D" />
+                      </svg>
+                    </div>
+                    <div class="type-item-info">
+                      <div class="type-item-name">
+                        Tipo 2 — Salchicha grumosa
+                      </div>
+                      <div class="type-item-desc">
+                        Con bolitas pegadas, dura
+                      </div>
+                    </div>
+                    <span class="type-item-badge">Estrenimiento leve</span>
+                  </div>
+                  <div
+                    class="type-item"
+                    data-type="3"
+                    onclick="editSelectType(this)"
+                  >
+                    <div class="type-icon">
+                      <svg viewBox="0 0 52 40" fill="none">
+                        <rect
+                          x="8"
+                          y="12"
+                          width="36"
+                          height="18"
+                          rx="9"
+                          fill="#7B4A2D"
+                        />
+                        <path
+                          d="M14 15 Q18 13 22 16 Q26 13 30 16 Q34 13 38 16"
+                          stroke="#5C3018"
+                          stroke-width="1.5"
+                          fill="none"
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M12 20 Q16 18 20 21 Q24 18 28 21 Q32 18 36 21 Q40 18 42 21"
+                          stroke="#5C3018"
+                          stroke-width="1.5"
+                          fill="none"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <div class="type-item-info">
+                      <div class="type-item-name">Tipo 3 — Con grietas</div>
+                      <div class="type-item-desc">
+                        Forma de salchicha con fisuras
+                      </div>
+                    </div>
+                    <span class="type-item-badge">Normal</span>
+                  </div>
+                  <div
+                    class="type-item"
+                    data-type="4"
+                    onclick="editSelectType(this)"
+                  >
+                    <div class="type-icon">
+                      <svg viewBox="0 0 52 40" fill="none">
+                        <ellipse
+                          cx="26"
+                          cy="20"
+                          rx="10"
+                          ry="16"
+                          fill="#7B4A2D"
+                        />
+                        <ellipse
+                          cx="26"
+                          cy="20"
+                          rx="6"
+                          ry="13"
+                          fill="#8B5A3A"
+                        />
+                      </svg>
+                    </div>
+                    <div class="type-item-info">
+                      <div class="type-item-name">Tipo 4 — Lisa y suave</div>
+                      <div class="type-item-desc">
+                        Como una salchicha o serpiente
+                      </div>
+                    </div>
+                    <span class="type-item-badge">Ideal</span>
+                  </div>
+                  <div
+                    class="type-item"
+                    data-type="5"
+                    onclick="editSelectType(this)"
+                  >
+                    <div class="type-icon">
+                      <svg viewBox="0 0 52 40" fill="none">
+                        <ellipse cx="12" cy="16" rx="8" ry="6" fill="#7B4A2D" />
+                        <ellipse cx="27" cy="12" rx="9" ry="6" fill="#6B3D22" />
+                        <ellipse cx="40" cy="17" rx="7" ry="5" fill="#7B4A2D" />
+                        <ellipse cx="20" cy="28" rx="8" ry="5" fill="#6B3D22" />
+                        <ellipse cx="35" cy="29" rx="7" ry="5" fill="#7B4A2D" />
+                      </svg>
+                    </div>
+                    <div class="type-item-info">
+                      <div class="type-item-name">Tipo 5 — Trozos blandos</div>
+                      <div class="type-item-desc">
+                        Bordes definidos, facil de pasar
+                      </div>
+                    </div>
+                    <span class="type-item-badge">Falta fibra</span>
+                  </div>
+                  <div
+                    class="type-item"
+                    data-type="6"
+                    onclick="editSelectType(this)"
+                  >
+                    <div class="type-icon">
+                      <svg viewBox="0 0 52 40" fill="none">
+                        <path
+                          d="M6 22 Q10 14 18 18 Q22 10 30 16 Q36 8 44 18 Q48 24 42 28 Q34 34 24 30 Q14 34 8 28 Z"
+                          fill="#8B5A3A"
+                        />
+                        <path
+                          d="M10 20 Q14 15 20 18 Q25 12 32 17 Q38 12 44 20"
+                          stroke="#6B3D22"
+                          stroke-width="1.5"
+                          fill="none"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <div class="type-item-info">
+                      <div class="type-item-name">Tipo 6 — Esponjoso</div>
+                      <div class="type-item-desc">
+                        Bordes irregulares, casi liquido
+                      </div>
+                    </div>
+                    <span class="type-item-badge">Diarrea leve</span>
+                  </div>
+                  <div
+                    class="type-item"
+                    data-type="7"
+                    onclick="editSelectType(this)"
+                  >
+                    <div class="type-icon">
+                      <svg viewBox="0 0 52 40" fill="none">
+                        <ellipse
+                          cx="26"
+                          cy="28"
+                          rx="22"
+                          ry="7"
+                          fill="#C4863A"
+                          opacity="0.5"
+                        />
+                        <ellipse
+                          cx="26"
+                          cy="26"
+                          rx="20"
+                          ry="5"
+                          fill="#C4863A"
+                          opacity="0.7"
+                        />
+                        <ellipse
+                          cx="22"
+                          cy="22"
+                          rx="14"
+                          ry="4"
+                          fill="#B87A30"
+                          opacity="0.8"
+                        />
+                        <ellipse
+                          cx="30"
+                          cy="20"
+                          rx="10"
+                          ry="3"
+                          fill="#A06828"
+                        />
+                      </svg>
+                    </div>
+                    <div class="type-item-info">
+                      <div class="type-item-name">
+                        Tipo 7 — Completamente liquido
+                      </div>
+                      <div class="type-item-desc">Sin partes solidas</div>
+                    </div>
+                    <span class="type-item-badge">Diarrea severa</span>
+                  </div>
+                </div>
+                <div class="edit-section-lbl">Que tan facil salio?</div>
+                <div class="edit-effort-grid">
+                  <div
+                    class="effort-btn"
+                    data-effort="smooth"
+                    onclick="editSelectEffort(this)"
+                  >
+                    <div class="effort-svg">
+                      <svg viewBox="0 0 44 44" fill="none">
+                        <circle cx="22" cy="22" r="20" fill="#7B4A2D" />
+                        <circle cx="22" cy="22" r="17" fill="#8B5A3A" />
+                        <ellipse
+                          cx="16"
+                          cy="19"
+                          rx="2.5"
+                          ry="3"
+                          fill="#5C3018"
+                        />
+                        <ellipse
+                          cx="28"
+                          cy="19"
+                          rx="2.5"
+                          ry="3"
+                          fill="#5C3018"
+                        />
+                        <circle cx="16" cy="18" r="1" fill="#F5E6D3" />
+                        <circle cx="28" cy="18" r="1" fill="#F5E6D3" />
+                        <path
+                          d="M15 29 Q22 34 29 29"
+                          stroke="#5C3018"
+                          stroke-width="2"
+                          fill="none"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="effort-btn-label">Solo</span
+                    ><span class="effort-btn-sub">Sin esfuerzo</span>
+                  </div>
+                  <div
+                    class="effort-btn"
+                    data-effort="bit"
+                    onclick="editSelectEffort(this)"
+                  >
+                    <div class="effort-svg">
+                      <svg viewBox="0 0 44 44" fill="none">
+                        <circle cx="22" cy="22" r="20" fill="#7B4A2D" />
+                        <circle cx="22" cy="22" r="17" fill="#8B5A3A" />
+                        <ellipse
+                          cx="16"
+                          cy="20"
+                          rx="2.5"
+                          ry="2.5"
+                          fill="#5C3018"
+                        />
+                        <ellipse
+                          cx="28"
+                          cy="20"
+                          rx="2.5"
+                          ry="2.5"
+                          fill="#5C3018"
+                        />
+                        <circle cx="16" cy="19" r="1" fill="#F5E6D3" />
+                        <circle cx="28" cy="19" r="1" fill="#F5E6D3" />
+                        <path
+                          d="M15 29 Q22 33 29 29"
+                          stroke="#5C3018"
+                          stroke-width="2"
+                          fill="none"
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M13 13 Q16 10 19 13"
+                          stroke="#5C3018"
+                          stroke-width="1.5"
+                          fill="none"
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M25 13 Q28 10 31 13"
+                          stroke="#5C3018"
+                          stroke-width="1.5"
+                          fill="none"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="effort-btn-label">Poco esfuerzo</span
+                    ><span class="effort-btn-sub">Leve empujoncito</span>
+                  </div>
+                  <div
+                    class="effort-btn"
+                    data-effort="hard"
+                    onclick="editSelectEffort(this)"
+                  >
+                    <div class="effort-svg">
+                      <svg viewBox="0 0 44 44" fill="none">
+                        <circle cx="22" cy="22" r="20" fill="#7B4A2D" />
+                        <circle cx="22" cy="22" r="17" fill="#8B5A3A" />
+                        <ellipse
+                          cx="16"
+                          cy="21"
+                          rx="3"
+                          ry="2.5"
+                          fill="#5C3018"
+                        />
+                        <ellipse
+                          cx="28"
+                          cy="21"
+                          rx="3"
+                          ry="2.5"
+                          fill="#5C3018"
+                        />
+                        <circle cx="16" cy="20" r="1" fill="#F5E6D3" />
+                        <circle cx="28" cy="20" r="1" fill="#F5E6D3" />
+                        <path
+                          d="M15 31 Q22 28 29 31"
+                          stroke="#5C3018"
+                          stroke-width="2"
+                          fill="none"
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M13 14 Q16 11 19 14"
+                          stroke="#5C3018"
+                          stroke-width="2"
+                          fill="none"
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M25 14 Q28 11 31 14"
+                          stroke="#5C3018"
+                          stroke-width="2"
+                          fill="none"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="effort-btn-label">Con esfuerzo</span
+                    ><span class="effort-btn-sub">Hubo que trabajarla</span>
+                  </div>
+                  <div
+                    class="effort-btn"
+                    data-effort="brutal"
+                    onclick="editSelectEffort(this)"
+                  >
+                    <div class="effort-svg">
+                      <svg viewBox="0 0 44 44" fill="none">
+                        <circle cx="22" cy="22" r="20" fill="#7B4A2D" />
+                        <circle cx="22" cy="22" r="17" fill="#8B5A3A" />
+                        <ellipse
+                          cx="16"
+                          cy="22"
+                          rx="3.5"
+                          ry="2.5"
+                          fill="#5C3018"
+                        />
+                        <ellipse
+                          cx="28"
+                          cy="22"
+                          rx="3.5"
+                          ry="2.5"
+                          fill="#5C3018"
+                        />
+                        <circle cx="16" cy="21" r="1" fill="#F5E6D3" />
+                        <circle cx="28" cy="21" r="1" fill="#F5E6D3" />
+                        <path
+                          d="M15 32 Q22 29 29 32"
+                          stroke="#5C3018"
+                          stroke-width="2"
+                          fill="none"
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M12 13 L15 16M19 11 L18 15"
+                          stroke="#5C3018"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M32 13 L29 16M25 11 L26 15"
+                          stroke="#5C3018"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="effort-btn-label">Una lucha</span
+                    ><span class="effort-btn-sub">Mision casi imposible</span>
+                  </div>
+                </div>
+                <div class="edit-section-lbl">Fecha y hora</div>
+                <div class="edit-dt-row">
+                  <div class="dt-wrap">
+                    <div class="dt-lbl">Fecha</div>
+                    <input type="date" id="edit-date" />
+                  </div>
+                  <div class="dt-wrap">
+                    <div class="dt-lbl">Hora</div>
+                    <input type="time" id="edit-time" />
+                  </div>
+                </div>
+                <div class="edit-section-lbl">Notas (opcional)</div>
+                <textarea
+                  id="edit-notes"
+                  style="
+                    width: 100%;
+                    border: 0.5px solid var(--border-strong);
+                    background: var(--bg-secondary);
+                    border-radius: var(--radius-md);
+                    padding: 10px 12px;
+                    font-size: 14px;
+                    font-family: &quot;DM Sans&quot;, sans-serif;
+                    color: var(--text-primary);
+                    resize: none;
+                    height: 60px;
+                  "
+                  placeholder="ej. despues del almuerzo..."
+                ></textarea>
+                <div class="edit-actions">
+                  <button class="btn-cancel" onclick="closeEdit()">
+                    Cancelar
+                  </button>
+                  <button class="btn-save" onclick="saveEdit()">
+                    Guardar cambios
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="empty-state">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="28" fill="#D3D1C7" />
+              <circle cx="32" cy="32" r="23" fill="#B4B2A9" />
+              <ellipse cx="24" cy="27" rx="3.5" ry="4" fill="#888780" />
+              <ellipse cx="40" cy="27" rx="3.5" ry="4" fill="#888780" />
+              <circle cx="24" cy="26" r="1.5" fill="#444441" />
+              <circle cx="40" cy="26" r="1.5" fill="#444441" />
+              <path
+                d="M24 42 Q32 46 40 42"
+                stroke="#888780"
+                stroke-width="2.5"
+                fill="none"
+                stroke-linecap="round"
+              />
+              <path
+                d="M20 18 Q24 13 27 18"
+                stroke="#888780"
+                stroke-width="2"
+                fill="none"
+                stroke-linecap="round"
+              />
+              <path
+                d="M37 18 Q40 13 44 18"
+                stroke="#888780"
+                stroke-width="2"
+                fill="none"
+                stroke-linecap="round"
+              />
+            </svg>
+            <div class="empty-title">Esperando al primer popo</div>
+            <div>Regístralo arriba cuando llegue el momento</div>
+          </div>
+        </div>
+
+        <div
+          style="
+            margin-top: 2rem;
+            padding: 1.25rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 0.5px solid var(--border);
+            text-align: center;
+          "
+        >
+          <div style="font-size: 22px; margin-bottom: 8px">&#128169;</div>
+          <div
+            style="
+              font-family: &quot;Syne&quot;, sans-serif;
+              font-size: 13px;
+              font-weight: 700;
+              color: var(--text-primary);
+              margin-bottom: 6px;
+            "
+          >
+            PoopLog no es un dispositivo médico
+          </div>
+          <div
+            style="
+              font-size: 12px;
+              color: var(--text-secondary);
+              line-height: 1.6;
+            "
+          >
+            Esta app es un rastreador personal con fines de aprendizaje y uso
+            propio. No uses estos datos para tomar decisiones sobre tu salud. Si
+            tienes alguna preocupación digestiva, consulta a un médico.
+          </div>
+          <div
+            style="
+              margin-top: 12px;
+              padding-top: 12px;
+              border-top: 0.5px solid var(--border);
+              font-size: 11px;
+              color: var(--text-secondary);
+            "
+          >
+            Hecho con
+            <a
+              href="https://claude.ai"
+              style="
+                color: var(--green);
+                text-decoration: none;
+                font-weight: 500;
+              "
+              >Claude</a
+            >
+            &middot; Anthropic &middot; 2026
+          </div>
         </div>
       </div>
-
-      <div class="form-row">
-        <div class="form-lbl">¿Qué tan fácil salió?</div>
-        <div class="effort-grid">
-          <div class="effort-btn" data-effort="smooth" onclick="selectEffort(this)"><div class="effort-svg"><svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#7B4A2D"/><circle cx="22" cy="22" r="17" fill="#8B5A3A"/><ellipse cx="16" cy="19" rx="2.5" ry="3" fill="#5C3018"/><ellipse cx="28" cy="19" rx="2.5" ry="3" fill="#5C3018"/><circle cx="16" cy="18" r="1" fill="#F5E6D3"/><circle cx="28" cy="18" r="1" fill="#F5E6D3"/><path d="M15 29 Q22 34 29 29" stroke="#5C3018" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M10 10 Q14 6 16 10" stroke="#7B4A2D" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M28 10 Q30 6 34 10" stroke="#7B4A2D" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div><span class="effort-btn-label">Solo</span><span class="effort-btn-sub">Sin esfuerzo</span></div>
-          <div class="effort-btn" data-effort="bit" onclick="selectEffort(this)"><div class="effort-svg"><svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#7B4A2D"/><circle cx="22" cy="22" r="17" fill="#8B5A3A"/><ellipse cx="16" cy="20" rx="2.5" ry="2.5" fill="#5C3018"/><ellipse cx="28" cy="20" rx="2.5" ry="2.5" fill="#5C3018"/><circle cx="16" cy="19" r="1" fill="#F5E6D3"/><circle cx="28" cy="19" r="1" fill="#F5E6D3"/><path d="M15 29 Q22 33 29 29" stroke="#5C3018" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M13 13 Q16 10 19 13" stroke="#5C3018" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M25 13 Q28 10 31 13" stroke="#5C3018" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div><span class="effort-btn-label">Poco esfuerzo</span><span class="effort-btn-sub">Leve empujoncito</span></div>
-          <div class="effort-btn" data-effort="hard" onclick="selectEffort(this)"><div class="effort-svg"><svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#7B4A2D"/><circle cx="22" cy="22" r="17" fill="#8B5A3A"/><ellipse cx="16" cy="21" rx="3" ry="2.5" fill="#5C3018"/><ellipse cx="28" cy="21" rx="3" ry="2.5" fill="#5C3018"/><circle cx="16" cy="20" r="1" fill="#F5E6D3"/><circle cx="28" cy="20" r="1" fill="#F5E6D3"/><path d="M15 31 Q22 28 29 31" stroke="#5C3018" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M13 14 Q16 11 19 14" stroke="#5C3018" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 14 Q28 11 31 14" stroke="#5C3018" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="10" cy="20" rx="3" ry="2" fill="#6B3D22" opacity="0.7"/><ellipse cx="34" cy="20" rx="3" ry="2" fill="#6B3D22" opacity="0.7"/></svg></div><span class="effort-btn-label">Con esfuerzo</span><span class="effort-btn-sub">Hubo que trabajarla</span></div>
-          <div class="effort-btn" data-effort="brutal" onclick="selectEffort(this)"><div class="effort-svg"><svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#7B4A2D"/><circle cx="22" cy="22" r="17" fill="#8B5A3A"/><ellipse cx="16" cy="22" rx="3.5" ry="2.5" fill="#5C3018"/><ellipse cx="28" cy="22" rx="3.5" ry="2.5" fill="#5C3018"/><circle cx="16" cy="21" r="1" fill="#F5E6D3"/><circle cx="28" cy="21" r="1" fill="#F5E6D3"/><path d="M15 32 Q22 29 29 32" stroke="#5C3018" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 13 L15 16M19 11 L18 15" stroke="#5C3018" stroke-width="2" stroke-linecap="round"/><path d="M32 13 L29 16M25 11 L26 15" stroke="#5C3018" stroke-width="2" stroke-linecap="round"/><path d="M9 18 L12 19M9 22 L12 21" stroke="#5C3018" stroke-width="1.5" stroke-linecap="round"/><path d="M35 18 L32 19M35 22 L32 21" stroke="#5C3018" stroke-width="1.5" stroke-linecap="round"/></svg></div><span class="effort-btn-label">Una lucha</span><span class="effort-btn-sub">Misión casi imposible</span></div>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-lbl">Notas (opcional)</div>
-        <textarea id="notes-input" placeholder="ej. después del almuerzo, tomé mucha agua..."></textarea>
-      </div>
-      <button class="submit-btn" id="btn-submit" onclick="logPoop()">💩 Registrar popo</button>
     </div>
 
-    <div class="section-title">Historial</div>
-    <div class="log-list" id="log-list">
+    <div class="toast" id="toast"></div>
 
-    <div class="edit-modal-backdrop" id="edit-backdrop" onclick="closeEditOutside(event)">
-      <div class="edit-sheet">
-        <div class="edit-header">
-          <div class="edit-title">Editar registro</div>
-          <button class="cal-close-btn" onclick="closeEdit()">&#x2715;</button>
-        </div>
-        <div class="edit-body">
-          <div class="edit-section-lbl">Tipo de popo</div>
-          <div class="edit-type-list" id="edit-type-list">
-            <div class="type-item" data-type="1" onclick="editSelectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><circle cx="10" cy="12" r="6" fill="#7B4A2D"/><circle cx="22" cy="8" r="5" fill="#6B3D22"/><circle cx="33" cy="13" r="6" fill="#7B4A2D"/><circle cx="16" cy="26" r="5" fill="#6B3D22"/><circle cx="28" cy="29" r="4" fill="#7B4A2D"/><circle cx="41" cy="22" r="5" fill="#6B3D22"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 1 — Bolitas separadas</div><div class="type-item-desc">Pelotitas duras, dificiles de expulsar</div></div><span class="type-item-badge">Estrenimiento severo</span></div>
-            <div class="type-item" data-type="2" onclick="editSelectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><ellipse cx="26" cy="22" rx="20" ry="11" fill="#6B3D22"/><circle cx="14" cy="18" r="7" fill="#7B4A2D"/><circle cx="24" cy="14" r="7" fill="#6B3D22"/><circle cx="34" cy="18" r="7" fill="#7B4A2D"/><circle cx="19" cy="26" r="6" fill="#6B3D22"/><circle cx="31" cy="26" r="6" fill="#7B4A2D"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 2 — Salchicha grumosa</div><div class="type-item-desc">Con bolitas pegadas, dura</div></div><span class="type-item-badge">Estrenimiento leve</span></div>
-            <div class="type-item" data-type="3" onclick="editSelectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><rect x="8" y="12" width="36" height="18" rx="9" fill="#7B4A2D"/><path d="M14 15 Q18 13 22 16 Q26 13 30 16 Q34 13 38 16" stroke="#5C3018" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M12 20 Q16 18 20 21 Q24 18 28 21 Q32 18 36 21 Q40 18 42 21" stroke="#5C3018" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 3 — Con grietas</div><div class="type-item-desc">Forma de salchicha con fisuras</div></div><span class="type-item-badge">Normal</span></div>
-            <div class="type-item" data-type="4" onclick="editSelectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><ellipse cx="26" cy="20" rx="10" ry="16" fill="#7B4A2D"/><ellipse cx="26" cy="20" rx="6" ry="13" fill="#8B5A3A"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 4 — Lisa y suave</div><div class="type-item-desc">Como una salchicha o serpiente</div></div><span class="type-item-badge">Ideal</span></div>
-            <div class="type-item" data-type="5" onclick="editSelectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><ellipse cx="12" cy="16" rx="8" ry="6" fill="#7B4A2D"/><ellipse cx="27" cy="12" rx="9" ry="6" fill="#6B3D22"/><ellipse cx="40" cy="17" rx="7" ry="5" fill="#7B4A2D"/><ellipse cx="20" cy="28" rx="8" ry="5" fill="#6B3D22"/><ellipse cx="35" cy="29" rx="7" ry="5" fill="#7B4A2D"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 5 — Trozos blandos</div><div class="type-item-desc">Bordes definidos, facil de pasar</div></div><span class="type-item-badge">Falta fibra</span></div>
-            <div class="type-item" data-type="6" onclick="editSelectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><path d="M6 22 Q10 14 18 18 Q22 10 30 16 Q36 8 44 18 Q48 24 42 28 Q34 34 24 30 Q14 34 8 28 Z" fill="#8B5A3A"/><path d="M10 20 Q14 15 20 18 Q25 12 32 17 Q38 12 44 20" stroke="#6B3D22" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 6 — Esponjoso</div><div class="type-item-desc">Bordes irregulares, casi liquido</div></div><span class="type-item-badge">Diarrea leve</span></div>
-            <div class="type-item" data-type="7" onclick="editSelectType(this)"><div class="type-icon"><svg viewBox="0 0 52 40" fill="none"><ellipse cx="26" cy="28" rx="22" ry="7" fill="#C4863A" opacity="0.5"/><ellipse cx="26" cy="26" rx="20" ry="5" fill="#C4863A" opacity="0.7"/><ellipse cx="22" cy="22" rx="14" ry="4" fill="#B87A30" opacity="0.8"/><ellipse cx="30" cy="20" rx="10" ry="3" fill="#A06828"/></svg></div><div class="type-item-info"><div class="type-item-name">Tipo 7 — Completamente liquido</div><div class="type-item-desc">Sin partes solidas</div></div><span class="type-item-badge">Diarrea severa</span></div>
-          </div>
-          <div class="edit-section-lbl">Que tan facil salio?</div>
-          <div class="edit-effort-grid">
-            <div class="effort-btn" data-effort="smooth" onclick="editSelectEffort(this)"><div class="effort-svg"><svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#7B4A2D"/><circle cx="22" cy="22" r="17" fill="#8B5A3A"/><ellipse cx="16" cy="19" rx="2.5" ry="3" fill="#5C3018"/><ellipse cx="28" cy="19" rx="2.5" ry="3" fill="#5C3018"/><circle cx="16" cy="18" r="1" fill="#F5E6D3"/><circle cx="28" cy="18" r="1" fill="#F5E6D3"/><path d="M15 29 Q22 34 29 29" stroke="#5C3018" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div><span class="effort-btn-label">Solo</span><span class="effort-btn-sub">Sin esfuerzo</span></div>
-            <div class="effort-btn" data-effort="bit" onclick="editSelectEffort(this)"><div class="effort-svg"><svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#7B4A2D"/><circle cx="22" cy="22" r="17" fill="#8B5A3A"/><ellipse cx="16" cy="20" rx="2.5" ry="2.5" fill="#5C3018"/><ellipse cx="28" cy="20" rx="2.5" ry="2.5" fill="#5C3018"/><circle cx="16" cy="19" r="1" fill="#F5E6D3"/><circle cx="28" cy="19" r="1" fill="#F5E6D3"/><path d="M15 29 Q22 33 29 29" stroke="#5C3018" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M13 13 Q16 10 19 13" stroke="#5C3018" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M25 13 Q28 10 31 13" stroke="#5C3018" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div><span class="effort-btn-label">Poco esfuerzo</span><span class="effort-btn-sub">Leve empujoncito</span></div>
-            <div class="effort-btn" data-effort="hard" onclick="editSelectEffort(this)"><div class="effort-svg"><svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#7B4A2D"/><circle cx="22" cy="22" r="17" fill="#8B5A3A"/><ellipse cx="16" cy="21" rx="3" ry="2.5" fill="#5C3018"/><ellipse cx="28" cy="21" rx="3" ry="2.5" fill="#5C3018"/><circle cx="16" cy="20" r="1" fill="#F5E6D3"/><circle cx="28" cy="20" r="1" fill="#F5E6D3"/><path d="M15 31 Q22 28 29 31" stroke="#5C3018" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M13 14 Q16 11 19 14" stroke="#5C3018" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M25 14 Q28 11 31 14" stroke="#5C3018" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div><span class="effort-btn-label">Con esfuerzo</span><span class="effort-btn-sub">Hubo que trabajarla</span></div>
-            <div class="effort-btn" data-effort="brutal" onclick="editSelectEffort(this)"><div class="effort-svg"><svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#7B4A2D"/><circle cx="22" cy="22" r="17" fill="#8B5A3A"/><ellipse cx="16" cy="22" rx="3.5" ry="2.5" fill="#5C3018"/><ellipse cx="28" cy="22" rx="3.5" ry="2.5" fill="#5C3018"/><circle cx="16" cy="21" r="1" fill="#F5E6D3"/><circle cx="28" cy="21" r="1" fill="#F5E6D3"/><path d="M15 32 Q22 29 29 32" stroke="#5C3018" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 13 L15 16M19 11 L18 15" stroke="#5C3018" stroke-width="2" stroke-linecap="round"/><path d="M32 13 L29 16M25 11 L26 15" stroke="#5C3018" stroke-width="2" stroke-linecap="round"/></svg></div><span class="effort-btn-label">Una lucha</span><span class="effort-btn-sub">Mision casi imposible</span></div>
-          </div>
-          <div class="edit-section-lbl">Fecha y hora</div>
-          <div class="edit-dt-row">
-            <div class="dt-wrap"><div class="dt-lbl">Fecha</div><input type="date" id="edit-date"/></div>
-            <div class="dt-wrap"><div class="dt-lbl">Hora</div><input type="time" id="edit-time"/></div>
-          </div>
-          <div class="edit-section-lbl">Notas (opcional)</div>
-          <textarea id="edit-notes" style="width:100%;border:0.5px solid var(--border-strong);background:var(--bg-secondary);border-radius:var(--radius-md);padding:10px 12px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text-primary);resize:none;height:60px;" placeholder="ej. despues del almuerzo..."></textarea>
-          <div class="edit-actions">
-            <button class="btn-cancel" onclick="closeEdit()">Cancelar</button>
-            <button class="btn-save" onclick="saveEdit()">Guardar cambios</button>
-          </div>
-        </div>
-      </div>
-    </div>
-      <div class="empty-state">
-        <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="28" fill="#D3D1C7"/><circle cx="32" cy="32" r="23" fill="#B4B2A9"/><ellipse cx="24" cy="27" rx="3.5" ry="4" fill="#888780"/><ellipse cx="40" cy="27" rx="3.5" ry="4" fill="#888780"/><circle cx="24" cy="26" r="1.5" fill="#444441"/><circle cx="40" cy="26" r="1.5" fill="#444441"/><path d="M24 42 Q32 46 40 42" stroke="#888780" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M20 18 Q24 13 27 18" stroke="#888780" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M37 18 Q40 13 44 18" stroke="#888780" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-        <div class="empty-title">Esperando al primer popo</div>
-        <div>Regístralo arriba cuando llegue el momento</div>
-      </div>
-    </div>
-
-    <div style="margin-top:2rem;padding:1.25rem;background:var(--bg-secondary);border-radius:var(--radius-lg);border:0.5px solid var(--border);text-align:center;">
-      <div style="font-size:22px;margin-bottom:8px">&#128169;</div>
-      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px;">PoopLog no es un dispositivo médico</div>
-      <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">Esta app es un rastreador personal con fines de aprendizaje y uso propio. No uses estos datos para tomar decisiones sobre tu salud. Si tienes alguna preocupación digestiva, consulta a un médico.</div>
-      <div style="margin-top:12px;padding-top:12px;border-top:0.5px solid var(--border);font-size:11px;color:var(--text-secondary);">Hecho con <a href="https://claude.ai" style="color:var(--green);text-decoration:none;font-weight:500;">Claude</a> &middot; Anthropic &middot; 2026</div>
-    </div>
-
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script src="js/app.js"></script>
-</body>
+    <script src="js/app.js"></script>
+  </body>
 </html>
