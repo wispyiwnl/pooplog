@@ -315,12 +315,20 @@ function obBuildDots() {
 function obUpdateUI() {
   const back = document.getElementById("ob-back");
   const next = document.getElementById("ob-next");
+  const skip = document.getElementById("ob-skip");
   if (!back || !next) return;
   back.style.display = obCurrent > 0 ? "inline-block" : "none";
   next.textContent = obCurrent === OB_TOTAL - 1 ? "¡Empezar!" : "Siguiente";
+  if (skip)
+    skip.style.display = obCurrent < OB_TOTAL - 1 ? "inline-block" : "none";
   document
     .querySelectorAll(".ob-dot")
     .forEach((d, i) => d.classList.toggle("ob-dot-active", i === obCurrent));
+}
+
+function obSkip() {
+  localStorage.setItem("ob_done", "1");
+  showPage("app");
 }
 
 function obGoTo(step, dir) {
