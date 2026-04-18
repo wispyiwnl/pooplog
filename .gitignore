@@ -3,7 +3,10 @@
 .env.local
 .env.production
 public/config.js
+
+# Instrucciones internas para Claude Code — solo local
 CLAUDE.md
+
 # Sistema operativo
 .DS_Store
 Thumbs.db
