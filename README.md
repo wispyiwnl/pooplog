@@ -8,3 +8,6 @@ Proyecto de aprendizaje y uso personal, construido junto a [Claude](https://clau
 
 ## Stack
 HTML · CSS · JavaScript · Supabase · Netlify
+
+## URL
+https://wispyiwnl.github.io/pooplog/

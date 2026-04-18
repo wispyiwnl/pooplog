@@ -3,7 +3,7 @@
 .env.local
 .env.production
 public/config.js
-
+CLAUDE.md
 # Sistema operativo
 .DS_Store
 Thumbs.db
