@@ -1252,7 +1252,17 @@ async function deleteLog(id) {
 }
 
 // ── INIT ──
+// Fallback: si onAuthStateChange no dispara en 5s (sesión corrupta, red mala,
+// token que no refresca), liberamos al usuario a la pantalla de auth en vez
+// de dejarlo atrapado en el spinner.
+const loadingFallback = setTimeout(() => {
+  if (document.querySelector(".page.active")?.id === "page-loading") {
+    showPage("auth");
+  }
+}, 5000);
+
 sb.auth.onAuthStateChange(async (event, session) => {
+  clearTimeout(loadingFallback);
   if (session?.user) {
     currentUser = session.user;
     const email = currentUser.email || "";
