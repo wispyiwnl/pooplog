@@ -1,7 +1,14 @@
-// Service Worker de PoopLog — cachea el app shell para funcionar offline.
-// Para forzar actualización en clientes instalados, bumpea CACHE (v1 → v2).
+// Service Worker de PoopLog.
+//
+// Estrategia: network-first para el app shell (HTML/CSS/JS). Así los usuarios
+// siempre reciben la versión desplegada más reciente cuando tienen internet,
+// y solo usan la caché como fallback offline. Evita el problema de "usuarios
+// atrapados con código viejo" típico de cache-first.
+//
+// Si cambias esta estrategia, bumpea CACHE (v2 → v3) para invalidar las cachés
+// viejas de clientes ya instalados.
 
-const CACHE = "pooplog-v1";
+const CACHE = "pooplog-v2";
 const SHELL = [
   "./",
   "./index.html",
@@ -28,17 +35,26 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
 
-  // Supabase y fuentes externas: siempre ir a red (no cachear).
-  if (url.hostname.includes("supabase.co") || url.hostname.includes("googleapis.com") || url.hostname.includes("gstatic.com") || url.hostname.includes("jsdelivr.net")) {
+  // Externos (Supabase, fuentes, CDN): siempre red, sin cache.
+  if (
+    url.hostname.includes("supabase.co") ||
+    url.hostname.includes("googleapis.com") ||
+    url.hostname.includes("gstatic.com") ||
+    url.hostname.includes("jsdelivr.net")
+  ) {
     return;
   }
 
-  // config.js: no cachear — siempre fresco desde red, con fallback a caché si no hay conexión.
-  if (url.pathname.endsWith("/config.js")) {
-    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-    return;
-  }
-
-  // App shell: cache-first.
-  e.respondWith(caches.match(e.request).then((r) => r || fetch(e.request)));
+  // App shell: network-first con fallback a caché.
+  // Si hay red, fetch fresco y actualizar caché en segundo plano.
+  // Si no hay red, devolver lo que esté en caché.
+  e.respondWith(
+    fetch(e.request)
+      .then((response) => {
+        const copy = response.clone();
+        caches.open(CACHE).then((c) => c.put(e.request, copy));
+        return response;
+      })
+      .catch(() => caches.match(e.request)),
+  );
 });
