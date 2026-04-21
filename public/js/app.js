@@ -554,8 +554,10 @@ function confirmClearGuest() {
     confirm("¿Borrar todo el historial de invitado? Esto no se puede deshacer.")
   ) {
     localStorage.removeItem("pooplog_guest");
+    localStorage.removeItem("pooplog_guest_mode");
     logs = [];
     updateUI();
+    showPage("auth");
     showToast("Historial borrado");
   }
 }
@@ -569,6 +571,9 @@ function closeProfile() {
 
 function enterAsGuest() {
   currentUser = null;
+  // Persistir la marca para que al recargar la app se restaure el modo invitado
+  // en vez de mandar al usuario al login.
+  localStorage.setItem("pooplog_guest_mode", "1");
   setupGuestUI();
   initTimeToggle();
   logs = JSON.parse(localStorage.getItem("pooplog_guest") || "[]").map((l) => ({
@@ -600,6 +605,7 @@ function setupGuestUI() {
 async function doLogout() {
   closeProfile();
   if (!confirm("¿Cerrar sesión?")) return;
+  localStorage.removeItem("pooplog_guest_mode");
   await sb.auth.signOut();
   showPage("auth");
 }
@@ -1252,19 +1258,26 @@ async function deleteLog(id) {
 }
 
 // ── INIT ──
-// Fallback: si onAuthStateChange no dispara en 5s (sesión corrupta, red mala,
-// token que no refresca), liberamos al usuario a la pantalla de auth en vez
-// de dejarlo atrapado en el spinner.
-const loadingFallback = setTimeout(() => {
+// Red de seguridad permanente: si por lo que sea seguimos en page-loading
+// después de 5 segundos, escapamos. Se deja corriendo sin cancelar — si la UI
+// ya avanzó, el if falla y no hace nada. Más robusto que clearTimeout porque
+// también rescata de hangs mid-flow (ej. loadLogs colgado).
+setTimeout(() => {
   if (document.querySelector(".page.active")?.id === "page-loading") {
-    showPage("auth");
+    if (localStorage.getItem("pooplog_guest_mode") === "1") {
+      enterAsGuest();
+    } else {
+      showPage("auth");
+    }
   }
 }, 5000);
 
 sb.auth.onAuthStateChange(async (event, session) => {
-  clearTimeout(loadingFallback);
   if (session?.user) {
     currentUser = session.user;
+    // Si venía de modo invitado, lo desactivamos: ahora tiene cuenta real.
+    localStorage.removeItem("pooplog_guest_mode");
+
     const email = currentUser.email || "";
     const initials = email.slice(0, 2).toUpperCase();
     const sinceDate = new Date(currentUser.created_at).toLocaleDateString(
@@ -1287,9 +1300,8 @@ sb.auth.onAuthStateChange(async (event, session) => {
       (document.getElementById("logout-email-hint").textContent = email);
     document.getElementById("guest-banner").style.display = "none";
 
-    initTimeToggle();
-    updateWeeklyBar();
-    await loadLogs();
+    // Transicionar la UI YA — antes de cualquier await — para no quedar
+    // atrapados si loadLogs() no responde.
     if (!localStorage.getItem("ob_done")) {
       obBuildDots();
       obUpdateUI();
@@ -1297,9 +1309,20 @@ sb.auth.onAuthStateChange(async (event, session) => {
     } else {
       showPage("app");
     }
+
+    // Cargar datos en background. Si falla, la UI ya está visible con datos
+    // vacíos; el usuario puede reintentar manualmente.
+    initTimeToggle();
+    updateWeeklyBar();
+    loadLogs().catch(() => {});
   } else {
     currentUser = null;
-    showPage("auth");
+    // Si venía en modo invitado, restaurarlo en vez de mandarlo al login.
+    if (localStorage.getItem("pooplog_guest_mode") === "1") {
+      enterAsGuest();
+    } else {
+      showPage("auth");
+    }
   }
 });
 
