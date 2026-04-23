@@ -2008,6 +2008,15 @@
 
     <div class="toast" id="toast"></div>
 
+    <!-- Orden de carga importante: constants define estado + sb client;
+         ui/auth/data usan ese estado; score/calendar consumen todo;
+         app.js arranca el flujo al final. -->
+    <script src="js/constants.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/score.js"></script>
+    <script src="js/calendar.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>
