@@ -48,6 +48,7 @@ let selectedType = "4";
 let selectedEffort = null;
 let logs = [];
 let currentUser = null;
+let filters = { type: "", from: "", to: "", search: "" };
 let isNow = true;
 let selectedDateTime = new Date();
 let calViewYear = new Date().getFullYear();
@@ -1394,6 +1395,59 @@ function toggleMenu(id, event) {
   }
 }
 
+function toggleFilters() {
+  const panel = document.getElementById("filter-panel");
+  panel.classList.toggle("open");
+}
+
+function setFilter(key, value) {
+  filters[key] = value;
+  updateFilterBadge();
+  renderList();
+}
+
+function clearFilters() {
+  filters = { type: "", from: "", to: "", search: "" };
+  document.getElementById("filter-search").value = "";
+  document.getElementById("filter-type").value = "";
+  document.getElementById("filter-from").value = "";
+  document.getElementById("filter-to").value = "";
+  updateFilterBadge();
+  renderList();
+}
+
+function countActiveFilters() {
+  return Object.values(filters).filter((v) => v !== "").length;
+}
+
+function updateFilterBadge() {
+  const count = countActiveFilters();
+  const toggle = document.getElementById("filter-toggle");
+  const badge = document.getElementById("filter-count");
+  toggle.classList.toggle("active", count > 0);
+  badge.textContent = count > 0 ? count : "";
+  badge.classList.toggle("show", count > 0);
+}
+
+function applyFilters(list) {
+  return list.filter((l) => {
+    if (filters.type !== "" && String(l.type) !== filters.type) return false;
+    if (filters.from) {
+      const from = new Date(filters.from + "T00:00:00");
+      if (l.time < from) return false;
+    }
+    if (filters.to) {
+      const to = new Date(filters.to + "T23:59:59");
+      if (l.time > to) return false;
+    }
+    if (filters.search) {
+      const q = filters.search.toLowerCase();
+      if (!(l.notes || "").toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+}
+
 function renderList() {
   const list = document.getElementById("log-list");
   const emptyHtml = list.querySelector(".edit-modal-backdrop")
@@ -1405,8 +1459,15 @@ function renderList() {
       `<div class="empty-state"><svg width="64" height="64" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="28" fill="#D3D1C7"/><circle cx="32" cy="32" r="23" fill="#B4B2A9"/><ellipse cx="24" cy="27" rx="3.5" ry="4" fill="#888780"/><ellipse cx="40" cy="27" rx="3.5" ry="4" fill="#888780"/><circle cx="24" cy="26" r="1.5" fill="#444441"/><circle cx="40" cy="26" r="1.5" fill="#444441"/><path d="M24 42 Q32 46 40 42" stroke="#888780" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M20 18 Q24 13 27 18" stroke="#888780" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M37 18 Q40 13 44 18" stroke="#888780" stroke-width="2" fill="none" stroke-linecap="round"/></svg><div class="empty-title">Esperando al primer popo</div><div>Registralo arriba cuando llegue el momento</div></div>`;
     return;
   }
-  const items = logs
-    .slice(0, 20)
+  const filtered = applyFilters(logs);
+  if (!filtered.length) {
+    list.innerHTML =
+      emptyHtml +
+      `<div class="empty-state"><div class="empty-title">Sin resultados</div><div>Prueba ajustando los filtros</div></div>`;
+    return;
+  }
+  const items = filtered
+    .slice(0, 50)
     .map((l) => {
       const lid = l.id || l.created_at || l.time.toISOString();
       const ts =

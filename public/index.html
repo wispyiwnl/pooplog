@@ -1361,7 +1361,66 @@
           </button>
         </div>
 
-        <div class="section-title">Historial</div>
+        <div class="history-header">
+          <div class="section-title" style="margin-bottom: 0">Historial</div>
+          <button
+            class="filter-toggle"
+            id="filter-toggle"
+            onclick="toggleFilters()"
+          >
+            <span>&#128269; Filtros</span>
+            <span class="filter-count" id="filter-count"></span>
+          </button>
+        </div>
+        <div class="filter-panel" id="filter-panel">
+          <div class="filter-row">
+            <input
+              type="search"
+              class="filter-search"
+              id="filter-search"
+              placeholder="Buscar en notas..."
+              oninput="setFilter('search', this.value)"
+            />
+          </div>
+          <div class="filter-row">
+            <select
+              class="filter-select"
+              id="filter-type"
+              onchange="setFilter('type', this.value)"
+            >
+              <option value="">Todos los tipos</option>
+              <option value="0">Día sin popo</option>
+              <option value="1">Tipo 1 — Bolitas</option>
+              <option value="2">Tipo 2 — Grumoso</option>
+              <option value="3">Tipo 3 — Con grietas</option>
+              <option value="4">Tipo 4 — Ideal</option>
+              <option value="5">Tipo 5 — Trozos</option>
+              <option value="6">Tipo 6 — Esponjoso</option>
+              <option value="7">Tipo 7 — Líquido</option>
+            </select>
+          </div>
+          <div class="filter-dates-row">
+            <div class="filter-date-wrap">
+              <div class="filter-date-lbl">Desde</div>
+              <input
+                type="date"
+                id="filter-from"
+                onchange="setFilter('from', this.value)"
+              />
+            </div>
+            <div class="filter-date-wrap">
+              <div class="filter-date-lbl">Hasta</div>
+              <input
+                type="date"
+                id="filter-to"
+                onchange="setFilter('to', this.value)"
+              />
+            </div>
+          </div>
+          <button class="filter-clear" onclick="clearFilters()">
+            Limpiar filtros
+          </button>
+        </div>
         <div class="log-list" id="log-list">
           <div
             class="edit-modal-backdrop"

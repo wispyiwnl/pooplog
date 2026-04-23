@@ -1062,6 +1062,112 @@ textarea:focus {
   border-radius: var(--radius-md);
   padding: 8px 10px;
 }
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  gap: 8px;
+}
+.filter-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-primary);
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.filter-toggle:hover {
+  background: var(--bg-secondary);
+}
+.filter-toggle.active {
+  background: var(--green-light);
+  border-color: var(--green);
+  color: var(--green-dark);
+}
+.filter-count {
+  background: var(--green);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 1px 6px;
+  display: none;
+}
+.filter-count.show {
+  display: inline-block;
+}
+.filter-panel {
+  display: none;
+  background: var(--bg-primary);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 12px;
+  flex-direction: column;
+  gap: 10px;
+}
+.filter-panel.open {
+  display: flex;
+}
+.filter-row {
+  display: flex;
+  gap: 8px;
+}
+.filter-search,
+.filter-select {
+  width: 100%;
+  border: 0.5px solid var(--border-strong);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 9px 12px;
+  font-size: 13px;
+  font-family: "DM Sans", sans-serif;
+  color: var(--text-primary);
+}
+.filter-search:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: var(--green);
+}
+.filter-dates-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.filter-date-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.filter-date-lbl {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.filter-clear {
+  background: transparent;
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 8px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.filter-clear:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
 .empty-state {
   text-align: center;
   padding: 2.5rem 1rem;
