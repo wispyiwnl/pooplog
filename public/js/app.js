@@ -73,6 +73,17 @@ const CAL_DAYS = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"];
 function pad2(n) {
   return String(n).padStart(2, "0");
 }
+
+// Escapa HTML para usar texto del usuario (notas, etc.) dentro de plantillas
+// que se inyectan con innerHTML. Evita XSS si alguien escribe "<script>" en notas.
+function escapeHtml(s) {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 function formatDateTime(d) {
   return (
     d.toLocaleDateString("es-CO", {
@@ -290,7 +301,7 @@ function showCalDetail(y, m, d) {
             hour: "2-digit",
             minute: "2-digit",
           }) +
-          (l.notes ? " · " + l.notes : "") +
+          (l.notes ? " · " + escapeHtml(l.notes) : "") +
           "</div></div>" +
           '<span class="log-badge ' +
           effortBadge[l.effort] +
@@ -1484,7 +1495,7 @@ function renderList() {
       const isNoPoop = String(l.type) === "0";
       return `<div class="log-item">
       <div class="log-icon">${svgs[l.type]}</div>
-      <div class="log-info"><div class="log-time">${ts}</div><div class="log-type">${typeNames[l.type]}${l.notes ? " · " + l.notes : ""}</div></div>
+      <div class="log-info"><div class="log-time">${ts}</div><div class="log-type">${typeNames[l.type]}${l.notes ? " · " + escapeHtml(l.notes) : ""}</div></div>
       <span class="log-badge ${effortBadge[l.effort]}">${effortLabels[l.effort]}</span>
       <button class="log-menu-btn" onclick="toggleMenu('${lid}', event)">&#8943;</button>
       <div class="log-menu-popup" id="menu-${lid}">
@@ -1648,6 +1659,42 @@ setTimeout(() => {
   }
 }, 5000);
 
+// Si el usuario tenía datos en modo invitado y ahora creó/entró a una cuenta,
+// subimos esos registros a Supabase con su nuevo user_id para que no los pierda.
+// Se ejecuta solo una vez por migración — si falla, se conserva el localStorage
+// para reintentar en la próxima sesión.
+async function migrateGuestDataIfAny(user) {
+  const raw = localStorage.getItem("pooplog_guest");
+  if (!raw) return;
+  let guestLogs;
+  try {
+    guestLogs = JSON.parse(raw);
+  } catch {
+    localStorage.removeItem("pooplog_guest");
+    return;
+  }
+  if (!Array.isArray(guestLogs) || !guestLogs.length) {
+    localStorage.removeItem("pooplog_guest");
+    return;
+  }
+
+  const rows = guestLogs.map((l) => ({
+    type: String(l.type),
+    effort: l.effort || "none",
+    notes: l.notes || "",
+    user_id: user.id,
+    created_at: new Date(l.time).toISOString(),
+  }));
+
+  const { error } = await sb.from("poops").insert(rows);
+  if (error) {
+    showToast("No pudimos migrar tus datos de invitado. Lo intentaremos luego.");
+    return;
+  }
+  localStorage.removeItem("pooplog_guest");
+  showToast(`Migramos ${rows.length} registros a tu cuenta`);
+}
+
 sb.auth.onAuthStateChange(async (event, session) => {
   if (session?.user) {
     currentUser = session.user;
@@ -1690,7 +1737,11 @@ sb.auth.onAuthStateChange(async (event, session) => {
     // vacíos; el usuario puede reintentar manualmente.
     initTimeToggle();
     updateWeeklyBar();
-    loadLogs().catch(() => {});
+    // Primero migrar datos de invitado (si hay), después cargar logs
+    // para que el usuario vea todo junto.
+    migrateGuestDataIfAny(currentUser)
+      .then(() => loadLogs())
+      .catch(() => {});
   } else {
     currentUser = null;
     // Si venía en modo invitado, restaurarlo en vez de mandarlo al login.
