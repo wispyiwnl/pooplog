@@ -3,6 +3,7 @@ const { SUPABASE_URL, SUPABASE_KEY } = window.POOPLOG_CONFIG;
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const typeNames = {
+  0: "Día sin popo",
   1: "Tipo 1 — Bolitas",
   2: "Tipo 2 — Grumoso",
   3: "Tipo 3 — Con grietas",
@@ -12,12 +13,14 @@ const typeNames = {
   7: "Tipo 7 — Líquido",
 };
 const effortLabels = {
+  none: "Sin actividad",
   smooth: "Solo",
   bit: "Poco esfuerzo",
   hard: "Con esfuerzo",
   brutal: "Una lucha",
 };
 const effortBadge = {
+  none: "badge-none",
   smooth: "badge-smooth",
   bit: "badge-bit",
   hard: "badge-hard",
@@ -31,6 +34,7 @@ const scoreFaces = {
   neutral: `<svg viewBox="0 0 52 52" fill="none"><circle cx="26" cy="26" r="24" fill="#D3D1C7"/><circle cx="26" cy="26" r="20" fill="#B4B2A9"/><ellipse cx="19" cy="22" rx="2.5" ry="3" fill="#888780"/><ellipse cx="33" cy="22" rx="2.5" ry="3" fill="#888780"/><circle cx="19" cy="21" r="1" fill="#F1EFE8"/><circle cx="33" cy="21" r="1" fill="#F1EFE8"/><path d="M19 33 Q26 37 33 33" stroke="#888780" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
 };
 const svgs = {
+  0: `<svg viewBox="0 0 52 40" fill="none"><circle cx="26" cy="20" r="14" fill="#D3D1C7"/><line x1="16" y1="20" x2="36" y2="20" stroke="#888780" stroke-width="3" stroke-linecap="round"/></svg>`,
   1: `<svg viewBox="0 0 52 40" fill="none"><circle cx="10" cy="12" r="6" fill="#7B4A2D"/><circle cx="22" cy="8" r="5" fill="#6B3D22"/><circle cx="33" cy="13" r="6" fill="#7B4A2D"/><circle cx="16" cy="26" r="5" fill="#6B3D22"/><circle cx="28" cy="29" r="4" fill="#7B4A2D"/><circle cx="41" cy="22" r="5" fill="#6B3D22"/></svg>`,
   2: `<svg viewBox="0 0 52 40" fill="none"><ellipse cx="26" cy="22" rx="20" ry="11" fill="#6B3D22"/><circle cx="14" cy="18" r="7" fill="#7B4A2D"/><circle cx="24" cy="14" r="7" fill="#6B3D22"/><circle cx="34" cy="18" r="7" fill="#7B4A2D"/><circle cx="19" cy="26" r="6" fill="#6B3D22"/><circle cx="31" cy="26" r="6" fill="#7B4A2D"/></svg>`,
   3: `<svg viewBox="0 0 52 40" fill="none"><rect x="8" y="12" width="36" height="18" rx="9" fill="#7B4A2D"/><path d="M14 15 Q18 13 22 16 Q26 13 30 16 Q34 13 38 16" stroke="#5C3018" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M12 20 Q16 18 20 21 Q24 18 28 21 Q32 18 36 21 Q40 18 42 21" stroke="#5C3018" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>`,
@@ -710,6 +714,50 @@ async function logPoop() {
   showToast("Popo registrado!");
 }
 
+async function logNoPoop() {
+  // Evitar duplicados: si ya reportó "sin popo" hoy, no crear otro.
+  const today = new Date().toDateString();
+  const already = logs.some(
+    (l) => String(l.type) === "0" && l.time.toDateString() === today,
+  );
+  if (already) {
+    showToast("Ya reportaste que hoy no pudiste");
+    return;
+  }
+
+  const poopTime = new Date();
+  if (currentUser) {
+    const { error } = await sb.from("poops").insert({
+      type: "0",
+      effort: "none",
+      notes: "",
+      user_id: currentUser.id,
+      created_at: poopTime.toISOString(),
+    });
+    if (error) {
+      showToast("Error al guardar. Intenta de nuevo.");
+      return;
+    }
+    await loadLogs();
+  } else {
+    const entry = {
+      id: Date.now(),
+      type: "0",
+      effort: "none",
+      notes: "",
+      time: poopTime,
+    };
+    logs.push(entry);
+    logs.sort((a, b) => b.time - a.time);
+    localStorage.setItem(
+      "pooplog_guest",
+      JSON.stringify(logs.map((l) => ({ ...l, time: l.time.toISOString() }))),
+    );
+    updateUI();
+  }
+  showToast("Registrado: hoy no pudiste");
+}
+
 async function loadLogs() {
   const { data, error } = await sb
     .from("poops")
@@ -750,8 +798,10 @@ function updateUI() {
   const prevStreak =
     parseInt(document.getElementById("stat-streak").textContent) || 0;
 
-  document.getElementById("stat-total").textContent = logs.length;
-  document.getElementById("stat-week").textContent = logs.filter(
+  // Stats cuentan solo popos reales (tipo 1-7), no días reportados como "sin popo".
+  const realLogs = logs.filter((l) => String(l.type) !== "0");
+  document.getElementById("stat-total").textContent = realLogs.length;
+  document.getElementById("stat-week").textContent = realLogs.filter(
     (l) => l.time >= new Date(now - 7 * 86400000),
   ).length;
   document.getElementById("stat-streak").textContent = streak;
@@ -822,9 +872,14 @@ function updateScore() {
     ? thisWeek
     : logs.slice(0, Math.min(7, logs.length));
 
-  const total = recent.length;
-  const types = recent.map((l) => parseInt(l.type));
-  const efforts = recent.map((l) => l.effort);
+  // Separar popos reales de reportes de "sin popo" para no contaminar las
+  // métricas de la escala de Bristol.
+  const realRecent = recent.filter((l) => String(l.type) !== "0");
+  const noPoopRecent = recent.filter((l) => String(l.type) === "0");
+
+  const total = realRecent.length;
+  const types = realRecent.map((l) => parseInt(l.type));
+  const efforts = realRecent.map((l) => l.effort);
 
   const constipated = types.filter((t) => t <= 2).length;
   const healthy = types.filter((t) => t >= 3 && t <= 4).length;
@@ -836,7 +891,8 @@ function updateScore() {
   const easyEffort = efforts.filter(
     (e) => e === "smooth" || e === "bit",
   ).length;
-  const activeDays = new Set(recent.map((l) => l.time.toDateString())).size;
+  const activeDays = new Set(realRecent.map((l) => l.time.toDateString())).size;
+  const noPoopDays = new Set(noPoopRecent.map((l) => l.time.toDateString())).size;
 
   const healthyRatio = healthy / total;
   const constipatedRatio = constipated / total;
@@ -844,7 +900,11 @@ function updateScore() {
   const effortRatio = easyEffort / total;
 
   let face, text, sub;
-  if (total === 0) {
+  if (total === 0 && noPoopDays > 0) {
+    face = "bad";
+    text = "Sin popo esta semana";
+    sub = "Agua, fibra y movimiento — y paciencia";
+  } else if (total === 0) {
     face = "neutral";
     text = "Sin datos aún";
     sub = "Registra tu primer popo";
@@ -877,13 +937,33 @@ function updateScore() {
 
   const insights = [];
 
-  if (total === 0) {
+  if (total === 0 && noPoopDays === 0) {
     insights.push({
       type: "info",
       icon: "&#128161;",
       text: "Registra algunos popos para ver tus insights.",
     });
   } else {
+    // Insight de días sin popo — prioridad alta si son varios.
+    if (noPoopDays >= 3) {
+      insights.push({
+        type: "bad",
+        icon: "&#128683;",
+        text: `Llevas ${noPoopDays} días sin popo esta semana. Signo claro de estreñimiento — toma más agua, come fibra (frutas, verduras, avena) y muévete. Si persiste, consulta a un médico.`,
+      });
+    } else if (noPoopDays >= 2) {
+      insights.push({
+        type: "warn",
+        icon: "&#9888;",
+        text: `${noPoopDays} días sin popo esta semana. Si continúa, revisa tu hidratación y alimentación.`,
+      });
+    } else if (noPoopDays === 1) {
+      insights.push({
+        type: "info",
+        icon: "&#128203;",
+        text: "Un día sin popo esta semana. Normal si pasa ocasionalmente.",
+      });
+    }
     if (activeDays < 3 && total < 4) {
       insights.push({
         type: "warn",
@@ -1038,7 +1118,8 @@ function updateWeeklyBar() {
     const d = new Date(now);
     d.setDate(d.getDate() - i);
     const c = logs.filter(
-      (l) => l.time.toDateString() === d.toDateString(),
+      (l) =>
+        String(l.type) !== "0" && l.time.toDateString() === d.toDateString(),
     ).length;
     counts.push({ day: days[d.getDay()], count: c });
     if (c > max) max = c;
@@ -1106,13 +1187,14 @@ function renderList() {
           hour: "2-digit",
           minute: "2-digit",
         });
+      const isNoPoop = String(l.type) === "0";
       return `<div class="log-item">
       <div class="log-icon">${svgs[l.type]}</div>
       <div class="log-info"><div class="log-time">${ts}</div><div class="log-type">${typeNames[l.type]}${l.notes ? " · " + l.notes : ""}</div></div>
       <span class="log-badge ${effortBadge[l.effort]}">${effortLabels[l.effort]}</span>
       <button class="log-menu-btn" onclick="toggleMenu('${lid}', event)">&#8943;</button>
       <div class="log-menu-popup" id="menu-${lid}">
-        <div class="log-menu-item" onclick="openEdit('${lid}')">&#9998; Editar</div>
+        ${isNoPoop ? "" : `<div class="log-menu-item" onclick="openEdit('${lid}')">&#9998; Editar</div>`}
         <div class="log-menu-item danger" onclick="deleteLog('${lid}')">&#128465; Eliminar</div>
       </div>
     </div>`;

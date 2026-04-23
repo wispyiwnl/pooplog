@@ -985,6 +985,28 @@ textarea:focus {
   background: #fcebeb;
   color: #a32d2d;
 }
+.badge-none {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+.btn-no-poop {
+  width: 100%;
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  padding: 10px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 6px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+.btn-no-poop:hover {
+  color: var(--text-primary);
+}
 .empty-state {
   text-align: center;
   padding: 2.5rem 1rem;
