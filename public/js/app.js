@@ -520,9 +520,20 @@ function openProfile() {
           <div style="font-size:11px;font-weight:400;opacity:0.7;margin-top:1px">Ver la guia de inicio</div>
         </div>
       </button>`;
+  const exportBtn = logs.length
+    ? `
+      <button class="profile-action-btn" onclick="exportCSV()">
+        <div class="profile-action-icon">&#128229;</div>
+        <div>
+          <div>Descargar historial (CSV)</div>
+          <div style="font-size:11px;font-weight:400;opacity:0.7;margin-top:1px">${logs.length} registro${logs.length === 1 ? "" : "s"} — útil para llevarle al médico</div>
+        </div>
+      </button>`
+    : "";
   if (currentUser) {
     actions.innerHTML =
       howItWorksBtn +
+      exportBtn +
       `
       <button class="profile-action-btn danger" onclick="doLogout()">
         <div class="profile-action-icon">&#128682;</div>
@@ -534,6 +545,7 @@ function openProfile() {
   } else {
     actions.innerHTML =
       howItWorksBtn +
+      exportBtn +
       `
       <button class="profile-action-btn" onclick="closeProfile();showPage('auth')">
         <div class="profile-action-icon">&#128273;</div>
@@ -551,6 +563,69 @@ function openProfile() {
       </button>`;
   }
   document.getElementById("profile-modal").classList.add("open");
+}
+
+function exportCSV() {
+  if (!logs.length) {
+    showToast("No hay datos para exportar");
+    return;
+  }
+
+  // Escapar comillas dobles y envolver campos con comas o saltos de línea.
+  const esc = (v) => {
+    const s = String(v ?? "");
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+
+  const header = [
+    "fecha",
+    "hora",
+    "tipo",
+    "tipo_descripcion",
+    "esfuerzo",
+    "esfuerzo_descripcion",
+    "notas",
+  ];
+
+  // Ordenar cronológicamente ascendente para que el médico lea de arriba abajo.
+  const sorted = [...logs].sort((a, b) => a.time - b.time);
+  const rows = sorted.map((l) => {
+    const d = l.time;
+    const fecha = d.toLocaleDateString("es-CO", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const hora = d.toLocaleTimeString("es-CO", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return [
+      fecha,
+      hora,
+      l.type,
+      typeNames[l.type] || "",
+      l.effort,
+      effortLabels[l.effort] || "",
+      l.notes || "",
+    ]
+      .map(esc)
+      .join(",");
+  });
+
+  // BOM UTF-8 para que Excel abra correctamente acentos y ñ.
+  const csv = "﻿" + header.join(",") + "\n" + rows.join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+
+  const today = new Date().toISOString().slice(0, 10);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `pooplog-${today}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+
+  showToast(`${sorted.length} registros descargados`);
 }
 
 function confirmClearGuest() {
