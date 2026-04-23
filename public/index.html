@@ -765,6 +765,34 @@
                 <div class="profile-stat-lbl">Días activo</div>
               </div>
             </div>
+            <div class="reminder-section">
+              <div class="reminder-header">
+                <div>
+                  <div class="reminder-title">Recordatorio diario</div>
+                  <div class="reminder-sub" id="reminder-sub">
+                    Te avisamos si se te olvida registrar
+                  </div>
+                </div>
+                <button
+                  class="tog"
+                  id="reminder-toggle"
+                  onclick="toggleReminder()"
+                >
+                  <div class="tog-knob"></div>
+                </button>
+              </div>
+              <div class="reminder-time-row" id="reminder-time-row">
+                <label class="reminder-time-lbl" for="reminder-time"
+                  >Hora del recordatorio</label
+                >
+                <input
+                  type="time"
+                  id="reminder-time"
+                  onchange="setReminderTime(this.value)"
+                />
+              </div>
+              <div class="reminder-note" id="reminder-note"></div>
+            </div>
             <div class="profile-actions" id="profile-actions"></div>
           </div>
         </div>

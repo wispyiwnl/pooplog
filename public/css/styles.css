@@ -1007,6 +1007,61 @@ textarea:focus {
 .btn-no-poop:hover {
   color: var(--text-primary);
 }
+.reminder-section {
+  padding: 1rem 1.5rem;
+  border-bottom: 0.5px solid var(--border);
+}
+.reminder-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.reminder-title {
+  font-family: "Syne", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+.reminder-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.reminder-time-row {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  gap: 12px;
+}
+.reminder-time-row.open {
+  display: flex;
+}
+.reminder-time-lbl {
+  font-size: 13px;
+  color: var(--text-primary);
+}
+.reminder-time-row input[type="time"] {
+  width: auto;
+  padding: 7px 10px;
+  font-size: 13px;
+}
+.reminder-note {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 10px;
+  line-height: 1.5;
+  display: none;
+}
+.reminder-note.show {
+  display: block;
+}
+.reminder-note.warn {
+  color: #854f0b;
+  background: #faeeda;
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+}
 .empty-state {
   text-align: center;
   padding: 2.5rem 1rem;

@@ -8,7 +8,7 @@
 // Si cambias esta estrategia, bumpea CACHE (v2 → v3) para invalidar las cachés
 // viejas de clientes ya instalados.
 
-const CACHE = "pooplog-v5";
+const CACHE = "pooplog-v6";
 const SHELL = [
   "./",
   "./index.html",
@@ -56,5 +56,33 @@ self.addEventListener("fetch", (e) => {
         return response;
       })
       .catch(() => caches.match(e.request)),
+  );
+});
+
+// Recordatorio diario vía Periodic Background Sync (best-effort, solo PWA
+// instalada en Chrome Android con engagement suficiente). El navegador decide
+// cuándo disparar — no es garantía de hora exacta, solo "una vez por día".
+self.addEventListener("periodicsync", (event) => {
+  if (event.tag === "daily-reminder") {
+    event.waitUntil(
+      self.registration.showNotification("💩 PoopLog", {
+        body: "¿Ya registraste tu popo de hoy?",
+        icon: "icons/icon-192.png",
+        badge: "icons/icon-192.png",
+        tag: "pooplog-daily-reminder",
+      }),
+    );
+  }
+});
+
+// Al hacer click en la notificación, abrir/enfocar la app.
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: "window" }).then((clients) => {
+      const existing = clients.find((c) => c.url.includes("/pooplog"));
+      if (existing) return existing.focus();
+      return self.clients.openWindow("./");
+    }),
   );
 });

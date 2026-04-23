@@ -509,6 +509,7 @@ function openProfile() {
   const streakEl = document.getElementById("p-stat-streak");
   streakEl.textContent = streakVal;
   streakEl.style.color = parseInt(streakVal) >= 3 ? "#085041" : "";
+  initReminderUI();
 
   const actions = document.getElementById("profile-actions");
   const howItWorksBtn = `
@@ -1110,6 +1111,163 @@ function updateScore() {
   }
 }
 
+// ── RECORDATORIO DIARIO ──
+// Limitación: sin backend propio no podemos garantizar notificaciones cuando
+// la app está cerrada. Lo que sí hacemos:
+//  1. Al abrir la app, si ya pasó la hora y no registraste, notificamos.
+//  2. Mientras la app está abierta, programamos timer para la hora exacta.
+//  3. En PWAs instaladas, intentamos Periodic Background Sync (best effort).
+let reminderTimer = null;
+
+function loadReminderSettings() {
+  return {
+    enabled: localStorage.getItem("pooplog_reminder_enabled") === "1",
+    time: localStorage.getItem("pooplog_reminder_time") || "20:00",
+  };
+}
+
+function initReminderUI() {
+  const { enabled, time } = loadReminderSettings();
+  document.getElementById("reminder-toggle").classList.toggle("on", enabled);
+  document.getElementById("reminder-time").value = time;
+  document
+    .getElementById("reminder-time-row")
+    .classList.toggle("open", enabled);
+  updateReminderNote();
+}
+
+function updateReminderNote() {
+  const note = document.getElementById("reminder-note");
+  if (!("Notification" in window)) {
+    note.textContent = "Tu navegador no soporta notificaciones.";
+    note.className = "reminder-note show warn";
+    return;
+  }
+  const { enabled } = loadReminderSettings();
+  if (!enabled) {
+    note.className = "reminder-note";
+    return;
+  }
+  if (Notification.permission === "denied") {
+    note.textContent =
+      "Bloqueaste las notificaciones. Actívalas en ajustes del navegador.";
+    note.className = "reminder-note show warn";
+  } else if (Notification.permission === "default") {
+    note.textContent = "Necesitamos tu permiso para enviarte el recordatorio.";
+    note.className = "reminder-note show warn";
+  } else {
+    note.textContent =
+      "Si la app está cerrada, el recordatorio puede no llegar. Ábrela al menos una vez al día.";
+    note.className = "reminder-note show";
+  }
+}
+
+async function toggleReminder() {
+  const { enabled } = loadReminderSettings();
+  const newEnabled = !enabled;
+
+  if (newEnabled) {
+    if (!("Notification" in window)) {
+      showToast("Tu navegador no soporta notificaciones");
+      return;
+    }
+    let perm = Notification.permission;
+    if (perm === "default") {
+      perm = await Notification.requestPermission();
+    }
+    if (perm !== "granted") {
+      showToast("Sin permiso no podemos avisarte");
+      updateReminderNote();
+      return;
+    }
+  }
+
+  localStorage.setItem("pooplog_reminder_enabled", newEnabled ? "1" : "0");
+  document.getElementById("reminder-toggle").classList.toggle("on", newEnabled);
+  document
+    .getElementById("reminder-time-row")
+    .classList.toggle("open", newEnabled);
+  updateReminderNote();
+  scheduleReminder();
+  if (newEnabled) showToast("Recordatorio activado");
+}
+
+function setReminderTime(time) {
+  localStorage.setItem("pooplog_reminder_time", time);
+  scheduleReminder();
+  showToast("Hora guardada: " + time);
+}
+
+function loggedToday() {
+  const today = new Date().toDateString();
+  return logs.some((l) => l.time.toDateString() === today);
+}
+
+function fireReminderNotification() {
+  if (Notification.permission !== "granted") return;
+  if (loggedToday()) return;
+  try {
+    new Notification("💩 PoopLog", {
+      body: "¿Ya registraste tu popo de hoy?",
+      icon: "icons/icon-192.png",
+      badge: "icons/icon-192.png",
+      tag: "pooplog-daily-reminder",
+    });
+  } catch (e) {
+    // Algunos contextos requieren pasar por el service worker.
+    if (navigator.serviceWorker?.ready) {
+      navigator.serviceWorker.ready.then((reg) =>
+        reg.showNotification("💩 PoopLog", {
+          body: "¿Ya registraste tu popo de hoy?",
+          icon: "icons/icon-192.png",
+          badge: "icons/icon-192.png",
+          tag: "pooplog-daily-reminder",
+        }),
+      );
+    }
+  }
+}
+
+function scheduleReminder() {
+  // Cancelar cualquier timer previo
+  if (reminderTimer) {
+    clearTimeout(reminderTimer);
+    reminderTimer = null;
+  }
+
+  const { enabled, time } = loadReminderSettings();
+  if (!enabled || Notification.permission !== "granted") return;
+
+  const [hh, mm] = time.split(":").map(Number);
+  const now = new Date();
+
+  // Próxima hora: hoy si aún no pasó; si ya pasó, mañana.
+  const next = new Date(now);
+  next.setHours(hh, mm, 0, 0);
+  if (next <= now) next.setDate(next.getDate() + 1);
+
+  const ms = next - now;
+  reminderTimer = setTimeout(() => {
+    fireReminderNotification();
+    scheduleReminder(); // reprograma para mañana
+  }, ms);
+}
+
+function checkMissedReminder() {
+  // Si ya pasó la hora de hoy y el usuario no registró, avisar inmediatamente.
+  const { enabled, time } = loadReminderSettings();
+  if (!enabled || Notification.permission !== "granted") return;
+  if (loggedToday()) return;
+
+  const [hh, mm] = time.split(":").map(Number);
+  const now = new Date();
+  const todayReminder = new Date(now);
+  todayReminder.setHours(hh, mm, 0, 0);
+  if (now >= todayReminder) {
+    fireReminderNotification();
+  }
+}
+
 function updateWeeklyBar() {
   const now = new Date();
   let max = 1;
@@ -1408,9 +1566,35 @@ sb.auth.onAuthStateChange(async (event, session) => {
   }
 });
 
-// ── PWA: registrar service worker ──
+// ── PWA: registrar service worker + recordatorio ──
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js").catch(() => {});
+  window.addEventListener("load", async () => {
+    try {
+      const reg = await navigator.serviceWorker.register("sw.js");
+      // Intentar Periodic Background Sync — solo funciona en PWAs instaladas
+      // en Chrome Android con suficiente engagement. Best effort, sin bloquear.
+      if ("periodicSync" in reg) {
+        try {
+          const status = await navigator.permissions.query({
+            name: "periodic-background-sync",
+          });
+          if (status.state === "granted") {
+            await reg.periodicSync.register("daily-reminder", {
+              minInterval: 24 * 60 * 60 * 1000,
+            });
+          }
+        } catch (e) {}
+      }
+    } catch (e) {}
   });
 }
+
+// Al cargar la app, programar el recordatorio para hoy y avisar si ya se pasó
+// la hora sin registrar.
+window.addEventListener("load", () => {
+  // Esperar un tick para que logs esté cargado.
+  setTimeout(() => {
+    scheduleReminder();
+    checkMissedReminder();
+  }, 1500);
+});
