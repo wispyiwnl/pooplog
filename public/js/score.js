@@ -41,14 +41,15 @@ function updateUI() {
 
   const streakCard = document.getElementById("streak-card");
   const streakLbl = document.getElementById("streak-lbl");
-  if (streak >= 3) {
+  if (streak >= 7) {
     streakCard.classList.add("streak-active");
-    const fire = streak >= 7 ? "&#128293;&#128293;" : "&#128293;";
-    streakLbl.innerHTML =
-      fire + " " + (streak === 1 ? "1 día" : streak + " días");
+    streakLbl.innerHTML = "&#128293;&#128293; días seguidos";
+  } else if (streak >= 3) {
+    streakCard.classList.add("streak-active");
+    streakLbl.innerHTML = "&#128293; días seguidos";
   } else {
     streakCard.classList.remove("streak-active");
-    streakLbl.textContent = streak === 1 ? "Racha: 1 día" : "Racha";
+    streakLbl.textContent = streak === 1 ? "día" : streak === 0 ? "racha" : "días";
   }
 
   if (streak > prevStreak && streak >= 3 && streak % 1 === 0) {
