@@ -82,6 +82,21 @@ function closeProfile() {
   document.getElementById("profile-modal").classList.remove("open");
 }
 
+// ── Bottom sheet del formulario de registrar ──
+// El form vive escondido en el modal y se abre con el FAB.
+
+function openRegister() {
+  document.getElementById("register-backdrop").classList.add("open");
+}
+
+function closeRegister() {
+  document.getElementById("register-backdrop").classList.remove("open");
+}
+
+function closeRegisterOutside(e) {
+  if (e.target === document.getElementById("register-backdrop")) closeRegister();
+}
+
 // ── Onboarding ──
 
 const OB_TOTAL = 6;

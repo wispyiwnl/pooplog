@@ -8,7 +8,7 @@
 // Si cambias esta estrategia, bumpea CACHE (v2 → v3) para invalidar las cachés
 // viejas de clientes ya instalados.
 
-const CACHE = "pooplog-v11";
+const CACHE = "pooplog-v12";
 const SHELL = [
   "./",
   "./index.html",

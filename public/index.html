@@ -855,20 +855,8 @@
           </div>
         </div>
 
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-num" id="stat-total">0</div>
-            <div class="stat-lbl">Total</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num" id="stat-week">0</div>
-            <div class="stat-lbl">Esta semana</div>
-          </div>
-          <div class="stat-card" id="streak-card">
-            <div class="stat-num" id="stat-streak">0</div>
-            <div class="stat-lbl" id="streak-lbl">Racha</div>
-          </div>
-        </div>
+        <!-- stat-total queda oculto: updateUI lo escribe y openProfile lo lee -->
+        <span id="stat-total" style="display: none">0</span>
 
         <div class="a-card week-card-btn" onclick="openCal()">
           <div class="week-card-top">
@@ -876,6 +864,16 @@
               Esta semana
             </div>
             <div class="week-hint">ver mes completo →</div>
+          </div>
+          <div class="week-stats-row">
+            <div class="week-stat-block">
+              <div class="week-stat-num" id="stat-week">0</div>
+              <div class="week-stat-lbl">popos esta semana</div>
+            </div>
+            <div class="week-stat-block" id="streak-card">
+              <div class="week-stat-num" id="stat-streak">0</div>
+              <div class="week-stat-lbl" id="streak-lbl">de racha</div>
+            </div>
           </div>
           <div class="weekly-bar" id="weekly-bar"></div>
         </div>
@@ -919,10 +917,21 @@
           </div>
         </div>
 
-        <div class="a-card">
-          <div class="section-title">Registrar popo</div>
-
-          <div class="time-toggle-row">
+        <div
+          class="register-backdrop"
+          id="register-backdrop"
+          onclick="closeRegisterOutside(event)"
+        >
+          <div class="register-sheet">
+            <div class="cal-handle"></div>
+            <div class="register-header">
+              <div class="register-title">Registrar popo</div>
+              <button class="cal-close-btn" onclick="closeRegister()">
+                &#x2715;
+              </button>
+            </div>
+            <div class="register-body">
+              <div class="time-toggle-row">
             <div class="time-toggle-left">
               <div class="time-toggle-label">Lo hiciste ahora?</div>
               <div class="time-toggle-sub" id="toggle-sub">
@@ -1353,12 +1362,14 @@
               placeholder="ej. después del almuerzo, tomé mucha agua..."
             ></textarea>
           </div>
-          <button class="submit-btn" id="btn-submit" onclick="logPoop()">
-            💩 Registrar popo
-          </button>
-          <button class="btn-no-poop" onclick="logNoPoop()">
-            Hoy no pude
-          </button>
+              <button class="submit-btn" id="btn-submit" onclick="logPoop()">
+                💩 Registrar popo
+              </button>
+              <button class="btn-no-poop" onclick="logNoPoop()">
+                Hoy no pude
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="history-header">
@@ -2004,6 +2015,10 @@
           </div>
         </div>
       </div>
+      <!-- Botón flotante de registro: solo visible en page-app (parent oculta sus hijos cuando no está activo) -->
+      <button class="register-fab" onclick="openRegister()">
+        💩 Registrar popo
+      </button>
     </div>
 
     <div class="toast" id="toast"></div>

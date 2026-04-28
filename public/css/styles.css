@@ -329,7 +329,8 @@ body {
 .app-root {
   max-width: 480px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 5rem;
+  /* Padding-bottom amplio: deja espacio para el FAB de "Registrar popo" sin tapar contenido */
+  padding: 1.5rem 1rem 7rem;
 }
 .app-header {
   display: flex;
@@ -1167,6 +1168,118 @@ textarea:focus {
 .filter-clear:hover {
   background: var(--bg-secondary);
   color: var(--text-primary);
+}
+
+/* ── Sección "Esta semana" enriquecida ── */
+.week-stats-row {
+  display: flex;
+  gap: 12px;
+  margin: 12px 0 4px;
+}
+.week-stat-block {
+  flex: 1;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  text-align: center;
+  transition: background 0.2s;
+}
+.week-stat-block.streak-active {
+  background: #e1f5ee;
+  border: 0.5px solid #9fe1cb;
+}
+.week-stat-num {
+  font-family: "Syne", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+.week-stat-block.streak-active .week-stat-num {
+  color: #085041;
+}
+.week-stat-lbl {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.week-stat-block.streak-active .week-stat-lbl {
+  color: #0f6e56;
+}
+
+/* ── Botón flotante de registrar ── */
+.register-fab {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  width: calc(100% - 2rem);
+  max-width: 448px;
+  background: var(--green);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 16px 28px;
+  font-family: "Syne", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  z-index: 80;
+  transition: transform 0.15s, opacity 0.15s;
+}
+.register-fab:hover {
+  opacity: 0.92;
+}
+.register-fab:active {
+  transform: translateX(-50%) scale(0.97);
+}
+
+/* ── Modal bottom-sheet del formulario de registrar ── */
+.register-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 350;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.register-backdrop.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.register-sheet {
+  background: var(--bg-primary);
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 0 0 1.5rem;
+  transform: translateY(40px);
+  transition: transform 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+  max-height: 92vh;
+  overflow-y: auto;
+}
+.register-backdrop.open .register-sheet {
+  transform: translateY(0);
+}
+.register-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 1.25rem 12px;
+  border-bottom: 0.5px solid var(--border);
+}
+.register-title {
+  font-family: "Syne", sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+}
+.register-body {
+  padding: 1.25rem;
 }
 .empty-state {
   text-align: center;

@@ -65,6 +65,7 @@ async function logPoop() {
       "Registrando para ahora mismo";
     btn.textContent = "Registrar popo";
   }
+  closeRegister();
   showToast("Popo registrado!");
 }
 
@@ -109,6 +110,7 @@ async function logNoPoop() {
     );
     updateUI();
   }
+  closeRegister();
   showToast("Registrado: hoy no pudiste");
 }
 
